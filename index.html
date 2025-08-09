@@ -18,10 +18,9 @@
     html,body{height:100%}
     body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);transition:var(--transition);min-height:100vh;font-size:clamp(14px,1.8vw,16px)}
     .dark{--bg:#0f1218;--fg:#e5e5e5;--card-bg:#1f2430;--header-bg:#1f2a50;--primary:#4f8cff;--secondary:#223a7a;--muted:#999;--danger:#ef5350;--love:#ff5c93;--chip:#1f2a50}
-    .pink{--bg:#ffe6f0;--fg:#880e4f;--card-bg:#ffe6f0;--header-bg:#ad1457;--primary:#d81b60;--secondary:#880e4f;--muted:#aa6688;--danger:#c2185b;--love:#ff2f7a;--chip:#ffd0e1}
+    .pink{--bg:#ffe6f0;--fg:#880e4f;--card-bg:#ffe6f0;--header-bg:#ad1457;--primary:#d81b60;--secondary:#880e4f;--muted:#aa6688;--danger:#c2185b;--love:#ff2f7a}
     a{color:var(--primary);text-decoration:none}
 
-    /* موبايل: منع التمرير الأفقي */
     html, body { width: 100%; overflow-x: hidden; }
     html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     img, video { max-width: 100%; height: auto; }
@@ -37,10 +36,9 @@
     /* Chips */
     .filters{position:sticky;top:58px;z-index:55;background:transparent;padding:8px 0;margin:0 auto;max-width:1280px}
     .chips{display:flex;gap:8px;overflow:auto;padding:8px 10px}
-    .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,0,0,.06);background:var(--chip);color:#fff;cursor:pointer;white-space:nowrap;opacity:.9}
-    .chip.light{color:#0d47a1}
-    body.dark .chip{color:#cfe3ff}
+    .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,0,0,.06);background:var(--chip);color:#0d47a1;cursor:pointer;white-space:nowrap;opacity:.95}
     .chip.active{background:#fff;color:#000;border-color:transparent}
+    body.dark .chip{color:#cfe3ff}
     body.dark .chip.active{background:#2a3350;color:#fff}
     body.pink .chip.active{background:#fff0f6;color:#880e4f}
 
@@ -59,7 +57,7 @@
     .post h4{margin:0 0 6px;font-size:clamp(16px,2vw,18px)}
     .post p{margin:8px 0;white-space:pre-wrap;line-height:1.65}
 
-    /* ---------------- KeFo Video Player (KVP) ---------------- */
+    /* KVP (مشغّل موحّد) */
     .kvp{position:relative;border-radius:10px;overflow:hidden;background:#000;margin-top:10px;aspect-ratio:16/9}
     .kvp-viewport{position:absolute;inset:0}
     .kvp-viewport iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -101,7 +99,7 @@
     .ad-note{background:#ffeedd;padding:10px;text-align:center;color:#333;font-weight:600;margin-top:8px;border-radius:6px}
     .full-span{grid-column:1/-1}
 
-    /* Bottom nav (mobile only) */
+    /* Bottom nav */
     .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:var(--secondary);padding:10px 0;border-radius:25px 25px 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.3);z-index:50}
     .nav-btn{text-align:center;color:#fff;font-size:12px;cursor:pointer}.nav-btn i{font-size:20px;display:block;margin-bottom:4px}
 
@@ -147,7 +145,7 @@
     <div id="postsContainer"></div>
   </div>
 
-  <!-- Bottom nav (mobile) -->
+  <!-- Bottom nav -->
   <div class="bottom-nav">
     <div class="nav-btn" onclick="openNewPost()"><i>➕</i>إضافة</div>
     <div class="nav-btn" onclick="showToast('قسم الدردشة قيد التطوير')"><i>💬</i>دردشة</div>
@@ -227,18 +225,15 @@
   <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- سكربت عام (غير موديول): الواجهة + الثيم + PWA + مشغّل KVP -->
+  <!-- سكربت عام: الواجهة + الثيم + PWA + KVP (آمن) -->
   <script>
-    /* ===== Modals ===== */
+    /* ===== Modals & Toast ===== */
     function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";['imageURL','youtubeURL','facebookURL'].forEach(id=>document.getElementById(id).value="");document.querySelectorAll('.input-row').forEach(r=>r.style.display='');}
     function closeNewPost(){document.getElementById("newPostModal").style.display="none";document.body.style.overflow="";}
     function openSettings(){document.getElementById("settingsModal").style.display="flex";document.body.style.overflow="hidden";}
     function closeSettings(){document.getElementById("settingsModal").style.display="none";document.body.style.overflow="";}
     function showInfo(title,message){document.getElementById('infoTitle').textContent=title||'تنبيه';document.getElementById('infoBody').textContent=message||'';document.getElementById('infoModal').style.display='flex';document.body.style.overflow="hidden";}
     function closeInfo(){document.getElementById('infoModal').style.display='none';document.body.style.overflow="";}
-    window.showInfo=showInfo;window.closeInfo=closeInfo;
-
-    /* ===== Toast ===== */
     window.showToast=(msg)=>{const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>t.classList.remove('show'),2500);};
 
     /* ===== Theme ===== */
@@ -256,7 +251,7 @@
     window.setMode=function(mode){applyTheme(mode);showToast(mode==='dark'?'تم تفعيل الوضع الليلي':mode==='pink'?'تم تفعيل الوضع البناتي':'تم تفعيل الوضع النهاري');};
     applyTheme(localStorage.getItem(themeKey)||"light");
 
-    /* ===== UI helpers ===== */
+    /* ===== Helpers ===== */
     document.addEventListener('contextmenu',e=>e.preventDefault());
     document.addEventListener('selectstart',e=>e.preventDefault());
     document.addEventListener('touchstart',function(e){window.longTouch=setTimeout(()=>e.preventDefault(),500);},{passive:false});
@@ -267,224 +262,91 @@
 
     /* ===== PWA ===== */
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(console.error);
-      });
+      window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(console.error); });
     }
     let deferredPrompt=null; const installBtn=document.getElementById('installBtn');
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); deferredPrompt=e;
-      if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
-        installBtn.style.display='inline-flex';
-      }
-    });
-    installBtn?.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice.catch(()=>null);
-      deferredPrompt=null; installBtn.style.display='none';
-      showToast(choice && choice.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.');
-    });
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt=e; if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) installBtn.style.display='inline-flex'; });
+    installBtn?.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); const c = await deferredPrompt.userChoice.catch(()=>null); deferredPrompt=null; installBtn.style.display='none'; showToast(c && c.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.'); });
     window.addEventListener('appinstalled',()=>{showToast('تم تثبيت التطبيق ✅');installBtn.style.display='none';});
 
-    /* ===== مشاركة ===== */
-    window.sharePost=function(){
-      const text="أدعوك للمشاركة على منصة KeFo Posts عبر الضغط على الرابط التالي: "+window.location.href;
-      if(navigator.share){navigator.share({text}).catch(()=>showToast("تعذّر المشاركة."));}
-      else{navigator.clipboard.writeText(text).then(()=>showToast("تم نسخ الرابط!")).catch(()=>showToast("تعذّر النسخ."));}
-    };
+    /* ====== KVP: لو حدث خطأ، نخلي Scan دالة لا تعمل بدلًا من كسر الصفحة ====== */
+    window.__KVP = window.__KVP || { scan: function(){} };
 
-    /* ====== KeFo Video Player (KVP) — واجهة موحّدة ليوتيوب/فيسبوك ====== */
-    (function(){
-      const kvp = {
-        items:new Map(), ytReady:false, fbReady:false, ytQueue:[], fbQueue:[],
-        ensureYT(){
-          if (window.YT && window.YT.Player) { this.ytReady = true; this.ytQueue.splice(0).forEach(fn=>fn()); return; }
-          if (this._ytLoading) return; this._ytLoading = true;
-          const s=document.createElement('script'); s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s);
-          window.onYouTubeIframeAPIReady = ()=>{ this.ytReady=true; this.ytQueue.splice(0).forEach(fn=>fn()); };
-        },
-        ensureFB(){
-          if (window.FB && window.FB.XFBML) { this.fbReady = true; this.fbQueue.splice(0).forEach(fn=>fn()); return; }
-          if (this._fbLoading) return; this._fbLoading = true;
-          const fbroot=document.createElement('div'); fbroot.id='fb-root'; document.body.appendChild(fbroot);
-          const s=document.createElement('script');
-          s.src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0";
-          s.async=true; s.defer=true; document.head.appendChild(s);
-          window.fbAsyncInit = ()=>{
-            this.fbReady = true;
-            // لما يصير عنصر فيديو جاهز، نستلم instance
-            FB.Event.subscribe('xfbml.ready', (msg)=>{
-              if (msg.type==='video') {
-                const inst = msg.instance;
-                const el = document.getElementById(msg.id);
-                if (!el) return;
-                const host = el.closest('.kvp');
-                if (!host) return;
-                const rec = this.items.get(host.dataset.kvpid);
-                if (rec && !rec.player) {
-                  rec.player = inst;
-                  this.bindFB(rec);
-                }
-              }
+    ;(function(){
+      try{
+        const kvp = {
+          items:new Map(), ytReady:false, fbReady:false, ytQueue:[], fbQueue:[],
+          ensureYT(){ if (window.YT && window.YT.Player){this.ytReady=true;this.ytQueue.splice(0).forEach(fn=>fn());return;}
+            if (this._ytLoading) return; this._ytLoading=true;
+            const s=document.createElement('script'); s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s);
+            window.onYouTubeIframeAPIReady=()=>{this.ytReady=true;this.ytQueue.splice(0).forEach(fn=>fn());}; },
+          ensureFB(){ if (window.FB && window.FB.XFBML){this.fbReady=true;this.fbQueue.splice(0).forEach(fn=>fn());return;}
+            if (this._fbLoading) return; this._fbLoading=true;
+            const fbroot=document.createElement('div'); fbroot.id='fb-root'; document.body.appendChild(fbroot);
+            const s=document.createElement('script'); s.src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0"; s.async=true; s.defer=true; document.head.appendChild(s);
+            window.fbAsyncInit=()=>{ this.fbReady=true;
+              FB.Event.subscribe('xfbml.ready',(msg)=>{ if(msg.type==='video'){ const inst=msg.instance; const el=document.getElementById(msg.id); const host=el&&el.closest('.kvp'); const rec=host&&this.items.get(host.dataset.kvpid); if(rec && !rec.player){ rec.player=inst; this.bindFB(rec);} }});
+              this.fbQueue.splice(0).forEach(fn=>fn()); }; },
+          scan(){
+            document.querySelectorAll('.kvp[data-ready!="1"]').forEach(el=>{
+              const id=el.dataset.kvpid||('kvp-'+Math.random().toString(36).slice(2)); el.dataset.kvpid=id; el.setAttribute('data-ready','1');
+              const controls=el.querySelector('.kvp-controls'), btnPlay=controls.querySelector('.kvp-btn.kvp-play'), btnFull=controls.querySelector('.kvp-btn.kvp-full');
+              const rngSeek=controls.querySelector('.kvp-seek'), rngVol=controls.querySelector('.kvp-vol'), timeEl=controls.querySelector('.kvp-time');
+              const bigBtn=el.querySelector('.kvp-bigplay'), overlay=el.querySelector('.kvp-overlay'), viewport=el.querySelector('.kvp-viewport');
+              const rec={ el,viewport,overlay,timeEl,rngSeek,rngVol,btnPlay,btnFull,bigBtn,type:el.dataset.type,vid:el.dataset.vid,url:el.dataset.url,player:null,dur:0,timer:null,state:'paused' };
+              this.items.set(id,rec);
+              const toggle=()=>this.toggle(rec);
+              btnPlay.addEventListener('click',toggle); bigBtn.addEventListener('click',toggle);
+              rngSeek.addEventListener('input',()=>{ timeEl.textContent=fmt(rngSeek.value*rec.dur/100)+' / '+fmt(rec.dur); });
+              rngSeek.addEventListener('change',()=>this.seekTo(rec,(rngSeek.value/100)*rec.dur));
+              rngVol.addEventListener('input',()=>this.setVolume(rec,+rngVol.value));
+              btnFull.addEventListener('click',()=>requestFull(el));
+              overlay.addEventListener('click',toggle);
             });
-            this.fbQueue.splice(0).forEach(fn=>fn());
-          };
-        },
-        scan(){
-          document.querySelectorAll('.kvp[data-ready!="1"]').forEach(el=>{
-            const id = el.dataset.kvpid || ('kvp-'+Math.random().toString(36).slice(2));
-            el.dataset.kvpid = id;
-            el.setAttribute('data-ready','1');
-
-            const controls = el.querySelector('.kvp-controls');
-            const btnPlay = controls.querySelector('.kvp-btn.kvp-play');
-            const btnFull = controls.querySelector('.kvp-btn.kvp-full');
-            const rngSeek = controls.querySelector('.kvp-seek');
-            const rngVol  = controls.querySelector('.kvp-vol');
-            const timeEl  = controls.querySelector('.kvp-time');
-            const bigBtn  = el.querySelector('.kvp-bigplay');
-            const overlay = el.querySelector('.kvp-overlay');
-            const viewport= el.querySelector('.kvp-viewport');
-
-            const rec = { el, viewport, overlay, timeEl, rngSeek, rngVol, btnPlay, btnFull, bigBtn,
-                          type: el.dataset.type, vid: el.dataset.vid, url: el.dataset.url,
-                          player:null, dur:0, timer:null, state:'paused' };
-            this.items.set(id, rec);
-
-            const toggle = ()=> this.toggle(rec);
-            btnPlay.addEventListener('click', toggle);
-            bigBtn.addEventListener('click', toggle);
-            rngSeek.addEventListener('input', ()=>{
-              timeEl.textContent = fmt(rngSeek.value * rec.dur / 100) + ' / ' + fmt(rec.dur);
-            });
-            rngSeek.addEventListener('change', ()=> this.seekTo(rec, (rngSeek.value/100)*rec.dur ));
-            rngVol.addEventListener('input', ()=> this.setVolume(rec, +rngVol.value));
-            btnFull.addEventListener('click', ()=> requestFull(el));
-
-            // انقر على أي مكان للتشغيل/إيقاف
-            overlay.addEventListener('click', toggle);
-          });
-        },
-        ensure(rec, cb){
-          if (rec.player) return cb && cb();
-          rec.el.querySelector('.kvp-overlay').classList.add('kvp-hide');
-          rec.el.insertAdjacentHTML('beforeend','<div class="kvp-loading">Loading…</div>');
-          if (rec.type==='yt') {
-            this.ensureYT();
-            const build = ()=>{
-              const vpId = rec.viewport.id || (rec.viewport.id = rec.el.dataset.kvpid+'-vp');
-              rec.player = new YT.Player(vpId, {
-                videoId: rec.vid,
-                playerVars:{controls:0,rel:0,modestbranding:1,iv_load_policy:3,playsinline:1},
-                events:{
-                  onReady: ()=>{
-                    rec.dur = rec.player.getDuration()||0;
-                    rec.el.querySelector('.kvp-loading')?.remove();
-                    this.updateTimeLoop(rec);
-                    cb && cb();
-                  },
-                  onStateChange: (e)=>{
-                    // 1=playing,2=paused,0=ended
-                    if (e.data===1){rec.state='playing'; rec.btnPlay.textContent='⏸';}
-                    else if (e.data===2){rec.state='paused'; rec.btnPlay.textContent='▶';}
-                    else if (e.data===0){rec.state='ended'; rec.btnPlay.textContent='▶'; this.seekTo(rec,0); rec.overlay.classList.remove('kvp-hide');}
-                  }
-                }
-              });
-            };
-            this.ytReady ? build() : this.ytQueue.push(build);
-          } else if (rec.type==='fb') {
-            this.ensureFB();
-            const build = ()=>{
-              const inner = document.createElement('div');
-              const fbId = rec.el.dataset.kvpid+'-fb';
-              inner.className='fb-video';
-              inner.id = fbId;
-              inner.setAttribute('data-href', rec.url);
-              inner.setAttribute('data-allowfullscreen', 'true');
-              inner.setAttribute('data-controls', 'false');
-              inner.setAttribute('data-show-text', 'false');
-              rec.viewport.appendChild(inner);
-              // سيُستدعى xfbml.ready لاحقًا ويملأ rec.player
-              FB.XFBML.parse(rec.viewport, ()=>{
-                rec.el.querySelector('.kvp-loading')?.remove();
-                // قد يتأخر inst قليلًا؛ نحدّث تايمر لاحقًا
-                setTimeout(()=> this.updateTimeLoop(rec), 800);
-                cb && cb();
-              });
-            };
-            this.fbReady ? build() : this.fbQueue.push(build);
-          }
-        },
-        toggle(rec){
-          if (!rec.player){ this.ensure(rec, ()=> this.play(rec)); return; }
-          if (rec.state==='playing') this.pause(rec); else this.play(rec);
-        },
-        play(rec){
-          rec.overlay.classList.add('kvp-hide');
-          rec.btnPlay.textContent='⏸';
-          if (rec.type==='yt') rec.player.playVideo();
-          else if (rec.type==='fb' && rec.player?.play) rec.player.play();
-          rec.state='playing';
-        },
-        pause(rec){
-          rec.btnPlay.textContent='▶';
-          if (rec.type==='yt') rec.player.pauseVideo();
-          else if (rec.type==='fb' && rec.player?.pause) rec.player.pause();
-          rec.state='paused';
-        },
-        seekTo(rec, sec){
-          if (!rec.player) return;
-          if (rec.type==='yt') rec.player.seekTo(sec, true);
-          else if (rec.type==='fb' && rec.player?.seek) rec.player.seek(sec);
-        },
-        setVolume(rec, v){ // 0..100
-          if (!rec.player) return;
-          if (rec.type==='yt' && rec.player.setVolume) rec.player.setVolume(v);
-          else if (rec.type==='fb' && rec.player.setVolume) rec.player.setVolume(v/100);
-        },
-        updateTimeLoop(rec){
-          clearInterval(rec.timer);
-          rec.timer = setInterval(()=>{
-            try{
-              let cur=0, dur=rec.dur;
-              if (rec.type==='yt'){
-                cur = rec.player.getCurrentTime?.()||0;
-                dur = rec.player.getDuration?.()||dur||0;
-              }else if (rec.type==='fb'){
-                if (rec.player?.getCurrentPosition) cur = rec.player.getCurrentPosition();
-                if (rec.player?.getDuration) dur = rec.player.getDuration();
-              }
-              rec.dur = dur||rec.dur||0;
-              if (rec.dur>0){
-                rec.rngSeek.value = Math.min(100, Math.max(0, (cur/rec.dur)*100));
-                rec.timeEl.textContent = fmt(cur)+' / '+fmt(rec.dur);
-              }
-            }catch(e){}
-          }, 300);
-        },
-        bindFB(rec){
-          try{
-            rec.player.subscribe('startedPlaying', ()=>{rec.state='playing';rec.btnPlay.textContent='⏸';rec.overlay.classList.add('kvp-hide');});
-            rec.player.subscribe('paused', ()=>{rec.state='paused';rec.btnPlay.textContent='▶';});
-            rec.player.subscribe('finishedPlaying', ()=>{rec.state='ended';rec.btnPlay.textContent='▶';rec.overlay.classList.remove('kvp-hide');});
-          }catch(e){}
-        }
-      };
-      function fmt(s){s=Math.max(0,Math.floor(s||0));const m=Math.floor(s/60), ss=(s%60).toString().padStart(2,'0');return m+':'+ss;}
-      function requestFull(el){if(el.requestFullscreen)el.requestFullscreen();else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();else if(el.msRequestFullscreen)el.msRequestFullscreen();}
-      window.__KVP = kvp; // للاستخدام من سكربت الموديول
+          },
+          ensure(rec,cb){
+            if (rec.player) return cb&&cb();
+            rec.el.querySelector('.kvp-overlay').classList.add('kvp-hide');
+            rec.el.insertAdjacentHTML('beforeend','<div class="kvp-loading">Loading…</div>');
+            if (rec.type==='yt'){
+              this.ensureYT();
+              const build=()=>{ const vpId=rec.viewport.id||(rec.viewport.id=rec.el.dataset.kvpid+'-vp');
+                rec.player=new YT.Player(vpId,{videoId:rec.vid,playerVars:{controls:0,rel:0,modestbranding:1,iv_load_policy:3,playsinline:1},
+                  events:{ onReady:()=>{rec.dur=rec.player.getDuration()||0; rec.el.querySelector('.kvp-loading')?.remove(); this.updateTimeLoop(rec); cb&&cb();},
+                           onStateChange:(e)=>{ if(e.data===1){rec.state='playing';rec.btnPlay.textContent='⏸';}
+                                                else if(e.data===2){rec.state='paused';rec.btnPlay.textContent='▶';}
+                                                else if(e.data===0){rec.state='ended';rec.btnPlay.textContent='▶'; this.seekTo(rec,0); rec.overlay.classList.remove('kvp-hide');} } }});
+              }; this.ytReady?build():this.ytQueue.push(build);
+            }else if(rec.type==='fb'){
+              this.ensureFB();
+              const build=()=>{ const inner=document.createElement('div'); const fbId=rec.el.dataset.kvpid+'-fb';
+                inner.className='fb-video'; inner.id=fbId; inner.setAttribute('data-href',rec.url); inner.setAttribute('data-allowfullscreen','true'); inner.setAttribute('data-controls','false'); inner.setAttribute('data-show-text','false');
+                rec.viewport.appendChild(inner); FB.XFBML.parse(rec.viewport,()=>{ rec.el.querySelector('.kvp-loading')?.remove(); setTimeout(()=>this.updateTimeLoop(rec),800); cb&&cb(); }); };
+              this.fbReady?build():this.fbQueue.push(build);
+            }
+          },
+          toggle(rec){ if(!rec.player){ this.ensure(rec,()=>this.play(rec)); return;} if(rec.state==='playing') this.pause(rec); else this.play(rec); },
+          play(rec){ rec.overlay.classList.add('kvp-hide'); rec.btnPlay.textContent='⏸'; if(rec.type==='yt') rec.player.playVideo(); else if(rec.type==='fb'&&rec.player?.play) rec.player.play(); rec.state='playing'; },
+          pause(rec){ rec.btnPlay.textContent='▶'; if(rec.type==='yt') rec.player.pauseVideo(); else if(rec.type==='fb'&&rec.player?.pause) rec.player.pause(); rec.state='paused'; },
+          seekTo(rec,sec){ if(!rec.player)return; if(rec.type==='yt') rec.player.seekTo(sec,true); else if(rec.type==='fb'&&rec.player?.seek) rec.player.seek(sec); },
+          setVolume(rec,v){ if(!rec.player)return; if(rec.type==='yt'&&rec.player.setVolume) rec.player.setVolume(v); else if(rec.type==='fb'&&rec.player.setVolume) rec.player.setVolume(v/100); },
+          updateTimeLoop(rec){ clearInterval(rec.timer); rec.timer=setInterval(()=>{ try{ let cur=0,dur=rec.dur; if(rec.type==='yt'){cur=rec.player.getCurrentTime?.()||0; dur=rec.player.getDuration?.()||dur||0;} else if(rec.type==='fb'){ if(rec.player?.getCurrentPosition) cur=rec.player.getCurrentPosition(); if(rec.player?.getDuration) dur=rec.player.getDuration(); }
+              rec.dur=dur||rec.dur||0; if(rec.dur>0){ rec.rngSeek.value=Math.min(100,Math.max(0,(cur/rec.dur)*100)); rec.timeEl.textContent=fmt(cur)+' / '+fmt(rec.dur);} }catch(e){} },300); },
+          bindFB(rec){ try{ rec.player.subscribe('startedPlaying',()=>{rec.state='playing';rec.btnPlay.textContent='⏸';rec.overlay.classList.add('kvp-hide');});
+                             rec.player.subscribe('paused',()=>{rec.state='paused';rec.btnPlay.textContent='▶';});
+                             rec.player.subscribe('finishedPlaying',()=>{rec.state='ended';rec.btnPlay.textContent='▶';rec.overlay.classList.remove('kvp-hide');}); }catch(e){} }
+        };
+        function fmt(s){s=Math.max(0,Math.floor(s||0));const m=Math.floor(s/60),ss=(s%60).toString().padStart(2,'0');return m+':'+ss;}
+        function requestFull(el){if(el.requestFullscreen)el.requestFullscreen();else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();else if(el.msRequestFullscreen)el.msRequestFullscreen();}
+        window.__KVP = kvp; // استبدال الـ no-op إن نجح التحميل
+      }catch(err){ console.error('KVP init error (non-fatal)',err); /* نترك no-op */ }
     })();
   </script>
 
-  <!-- سكربت الموديول: Firebase + البوستات + دمج KVP -->
+  <!-- سكربت الموديول: Firebase + البوستات -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, collection, query, orderBy, onSnapshot,
-      addDoc, updateDoc, doc, serverTimestamp, getCountFromServer, increment
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, getCountFromServer, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA15okly94Qb9XXSMdVdhGg5D4lMqLW1Iw",
@@ -500,256 +362,137 @@
     try { db = getFirestore(initializeApp(firebaseConfig)); }
     catch(e){ console.error('Firebase init error', e); window.showToast?.('تعذّر الاتصال بالخادم، ستظهر المنشورات عند الاتصال.'); }
 
-    const postsContainer = document.getElementById("postsContainer");
-    const chipsEl = document.getElementById("chips");
-    const filterTypes = [
-      {key:'الكل', badge:'',  label:'الكل'},
-      {key:'ساعدني', badge:'b-help',      label:'ساعدني'},
-      {key:'شكوى وفساد', badge:'b-complaint', label:'شكوى وفساد'},
-      {key:'تعليم',   badge:'b-edu',   label:'تعليم'},
-      {key:'صحة',     badge:'b-health', label:'صحة'},
-      {key:'منشورات متنوعة', badge:'b-misc',  label:'منوّع'}
-    ];
+    const postsContainer=document.getElementById("postsContainer");
+    const chipsEl=document.getElementById("chips");
+    const filterTypes=[{key:'الكل',label:'الكل'},{key:'ساعدني',label:'ساعدني'},{key:'شكوى وفساد',label:'شكوى وفساد'},{key:'تعليم',label:'تعليم'},{key:'صحة',label:'صحة'},{key:'منشورات متنوعة',label:'منوّع'}];
     let activeFilter='الكل', searchText='';
-    function buildChips(){
-      chipsEl.innerHTML='';
-      filterTypes.forEach(t=>{
-        const b=document.createElement('button');
-        b.className='chip light'+(t.key===activeFilter?' active':'');
-        b.textContent=t.label;
-        b.onclick=()=>{activeFilter=t.key;buildChips();updateVisibility();};
-        chipsEl.appendChild(b);
-      });
-    }
+
+    function buildChips(){ chipsEl.innerHTML=''; filterTypes.forEach(t=>{const b=document.createElement('button'); b.className='chip'+(t.key===activeFilter?' active':''); b.textContent=t.label; b.onclick=()=>{activeFilter=t.key; buildChips(); updateVisibility();}; chipsEl.appendChild(b);}); }
     buildChips();
 
-    function showSkeletons(n=6){postsContainer.innerHTML='';for(let i=0;i<n;i++){const sk=document.createElement('div');sk.className='skeleton skeleton-card';postsContainer.appendChild(sk);}}
+    function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton skeleton-card'; postsContainer.appendChild(sk);} }
     showSkeletons();
 
-    /* ------- Helpers ------- */
     function toYouTubeId(u){try{const url=new URL(u);let v=url.searchParams.get('v');if(!v){const p=url.pathname.split('/'); v=p.pop()||p.pop();}return v||null;}catch{return null;}}
     function toYouTubeThumb(u){ const id=toYouTubeId(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
     function toFacebookVideoURL(u){ try{return new URL(u).toString();}catch{return null;} }
 
-    function kvpYouTube(postId, ytUrl){
-      const id = toYouTubeId(ytUrl); if(!id) return '';
-      const thumb = toYouTubeThumb(ytUrl);
-      return `
-      <div class="kvp" data-type="yt" data-vid="${id}">
-        <div class="kvp-viewport"></div>
-        <div class="kvp-overlay" style="${thumb?`background-image:url('${thumb}')`:''}">
-          <button class="kvp-bigplay">▶</button>
-        </div>
-        <div class="kvp-controls">
-          <button class="kvp-btn kvp-play">▶</button>
-          <input type="range" class="kvp-seek" min="0" max="100" value="0">
-          <div class="kvp-time">0:00 / 0:00</div>
-          <input type="range" class="kvp-vol" min="0" max="100" value="100" title="الصوت">
-          <button class="kvp-btn kvp-full" title="ملء الشاشة">⛶</button>
-        </div>
-      </div>`;
-    }
-    function kvpFacebook(postId, fbUrl){
-      const url = toFacebookVideoURL(fbUrl); if(!url) return '';
-      return `
-      <div class="kvp" data-type="fb" data-url="${url}">
-        <div class="kvp-viewport"></div>
-        <div class="kvp-overlay">
-          <button class="kvp-bigplay">▶</button>
-        </div>
-        <div class="kvp-controls">
-          <button class="kvp-btn kvp-play">▶</button>
-          <input type="range" class="kvp-seek" min="0" max="100" value="0">
-          <div class="kvp-time">0:00 / 0:00</div>
-          <input type="range" class="kvp-vol" min="0" max="100" value="100" title="الصوت">
-          <button class="kvp-btn kvp-full" title="ملء الشاشة">⛶</button>
-        </div>
-      </div>`;
-    }
+    function kvpYouTube(postId, ytUrl){ const id=toYouTubeId(ytUrl); if(!id) return ''; const thumb=toYouTubeThumb(ytUrl);
+      return `<div class="kvp" data-type="yt" data-vid="${id}"><div class="kvp-viewport"></div><div class="kvp-overlay" style="${thumb?`background-image:url('${thumb}')`:''}"><button class="kvp-bigplay">▶</button></div><div class="kvp-controls"><button class="kvp-btn kvp-play">▶</button><input type="range" class="kvp-seek" min="0" max="100" value="0"><div class="kvp-time">0:00 / 0:00</div><input type="range" class="kvp-vol" min="0" max="100" value="100"><button class="kvp-btn kvp-full">⛶</button></div></div>`; }
+    function kvpFacebook(postId, fbUrl){ const url=toFacebookVideoURL(fbUrl); if(!url) return '';
+      return `<div class="kvp" data-type="fb" data-url="${url}"><div class="kvp-viewport"></div><div class="kvp-overlay"><button class="kvp-bigplay">▶</button></div><div class="kvp-controls"><button class="kvp-btn kvp-play">▶</button><input type="range" class="kvp-seek" min="0" max="100" value="0"><div class="kvp-time">0:00 / 0:00</div><input type="range" class="kvp-vol" min="0" max="100" value="100"><button class="kvp-btn kvp-full">⛶</button></div></div>`; }
 
     function renderMedia(post){
-      let html="";
-      if(post.imageURL) html+=`<img src="${post.imageURL}" alt="صورة" loading="lazy">`;
-      if(post.youtubeURL) html+= kvpYouTube(post.id, post.youtubeURL);
-      if(post.facebookURL) html+= kvpFacebook(post.id, post.facebookURL);
-      return html;
+      try{
+        let html="";
+        if(post.imageURL) html+=`<img src="${post.imageURL}" alt="صورة" loading="lazy">`;
+        if(post.youtubeURL) html+=kvpYouTube(post.id, post.youtubeURL);
+        if(post.facebookURL) html+=kvpFacebook(post.id, post.facebookURL);
+        return html;
+      }catch(e){
+        console.error('renderMedia error', e);
+        return ''; // لا نكسر الصفحة
+      }
     }
 
-    /* Observer */
     const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
     function observePosts(){ document.querySelectorAll(".post").forEach(p=>observer.observe(p)); }
 
-    /* Search */
     let searchTimeout;
-    document.getElementById("searchBar").addEventListener("input", function(){
-      clearTimeout(searchTimeout);
-      searchText=this.value.toLowerCase();
-      searchTimeout=setTimeout(updateVisibility,250);
-    });
-    function updateVisibility(){
-      const posts=document.querySelectorAll(".post");
-      posts.forEach(p=>{
-        const matchesType = (activeFilter==='الكل') || (p.dataset.type===activeFilter);
-        const matchesText = !searchText || p.innerText.toLowerCase().includes(searchText);
-        p.style.display = (matchesType && matchesText) ? '' : 'none';
-      });
-      document.querySelectorAll('.ad-slider-wrapper').forEach(a=>a.style.display='');
-    }
+    document.getElementById("searchBar").addEventListener("input", function(){ clearTimeout(searchTimeout); searchText=this.value.toLowerCase(); searchTimeout=setTimeout(updateVisibility,250); });
+    function updateVisibility(){ const posts=document.querySelectorAll(".post"); posts.forEach(p=>{const matchesType=(activeFilter==='الكل')||(p.dataset.type===activeFilter); const matchesText=!searchText||p.innerText.toLowerCase().includes(searchText); p.style.display=(matchesType&&matchesText)?'':'none';}); }
 
-    /* Ads demo */
-    const adsPool=[
-      {name:"إعلان 1",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/1"},
-      {name:"إعلان 2",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/2"},
-      {name:"إعلان 3",image:"https://via.placeholder.com/120",link:"https://example.com/3"},
-      {name:"إعلان 4",image:"https://via.placeholder.com/120",link:"https://example.com/4"},
-      {name:"إعلان 5",image:"https://via.placeholder.com/120",link:"https://example.com/5"},
-      {name:"إعلان 6",image:"https://via.placeholder.com/120",link:"https://example.com/6"}
-    ];
+    const adsPool=[{name:"إعلان 1",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/1"},{name:"إعلان 2",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/2"},{name:"إعلان 3",image:"https://via.placeholder.com/120",link:"https://example.com/3"},{name:"إعلان 4",image:"https://via.placeholder.com/120",link:"https://example.com/4"},{name:"إعلان 5",image:"https://via.placeholder.com/120",link:"https://example.com/5"},{name:"إعلان 6",image:"https://via.placeholder.com/120",link:"https://example.com/6"}];
     function getRandomAds(){const copy=[...adsPool];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy.slice(0,4);}
 
-    /* Comments + Posts + Votes */
     if (db){
       const postsQ=query(collection(db,"posts"),orderBy("timestamp","desc"));
-      onSnapshot(postsQ, async snap=>{
-        const posts=snap.docs.map(d=>({id:d.id,...d.data()}));
-        postsContainer.innerHTML = posts.length ? "" : `<div class="error">لا توجد منشورات حالياً.</div>`;
-
-        for(let i=0;i<posts.length;i++){
-          const post=posts[i];
-          const loves=post.loves||0, dislikes=post.dislikes||0;
-          const badgeClass =
-            post.type==="ساعدني" ? "b-help" :
-            post.type==="شكوى وفساد" ? "b-complaint" :
-            post.type==="تعليم" ? "b-edu" :
-            post.type==="صحة" ? "b-health" : "b-misc";
-
-          const card=document.createElement('div');
-          card.className='post';
-          card.dataset.type=post.type||'';
-          card.dataset.postId=post.id;
-
-          card.innerHTML=`
-            <div class="post-header">
-              <span class="badge ${badgeClass}">${post.type||'منوّع'}</span>
-            </div>
-            <h4>${post.type||''}</h4>
-            <p>${post.content||''}</p>
-            ${renderMedia(post)}
-            <div class="reactions">
-              <button class="react-btn react-love" id="love-${post.id}" onclick="vote('${post.id}','loves', this)">
-                <i>❤️</i><span class="count">${loves}</span>
-              </button>
-              <button class="react-btn react-dislike" id="dislike-${post.id}" onclick="vote('${post.id}','dislikes', this)">
-                <i>👎</i><span class="count">${dislikes}</span>
-              </button>
-
-              <button class="comments-toggle" id="toggle-${post.id}" onclick="toggleComments('${post.id}')" title="عرض/إخفاء التعليقات">
-                💬 التعليقات <span class="badge-num">0</span>
-              </button>
-              <button class="react-btn" onclick="sharePost()">🔗 مشاركة</button>
-            </div>
-            <div class="comments-panel" id="comments-wrap-${post.id}">
-              <div style="margin-top:6px;"><strong>التعليقات</strong></div>
-              <div class="existing-comments" style="margin-top:6px;"></div>
-              <div style="margin-top:8px;display:flex;gap:6px;">
-                <input id="input-comment-${post.id}" placeholder="اكتب تعليقك..." style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,.1);">
-                <button class="btn" style="flex:0 0 auto;" onclick="submitComment('${post.id}')">أضف</button>
+      onSnapshot(postsQ, snap=>{
+        try{
+          const posts=snap.docs.map(d=>({id:d.id,...d.data()}));
+          postsContainer.innerHTML = posts.length ? "" : `<div class="error">لا توجد منشورات حالياً.</div>`;
+          posts.forEach((post,i)=>{
+            const loves=post.loves||0, dislikes=post.dislikes||0;
+            const badgeClass = post.type==="ساعدني" ? "b-help" : post.type==="شكوى وفساد" ? "b-complaint" : post.type==="تعليم" ? "b-edu" : post.type==="صحة" ? "b-health" : "b-misc";
+            const card=document.createElement('div'); card.className='post'; card.dataset.type=post.type||''; card.dataset.postId=post.id;
+            card.innerHTML=`
+              <div class="post-header"><span class="badge ${badgeClass}">${post.type||'منوّع'}</span></div>
+              <h4>${post.type||''}</h4>
+              <p>${post.content||''}</p>
+              ${renderMedia(post)}
+              <div class="reactions">
+                <button class="react-btn react-love" id="love-${post.id}" onclick="vote('${post.id}','loves', this)"><i>❤️</i><span class="count">${loves}</span></button>
+                <button class="react-btn react-dislike" id="dislike-${post.id}" onclick="vote('${post.id}','dislikes', this)"><i>👎</i><span class="count">${dislikes}</span></button>
+                <button class="comments-toggle" id="toggle-${post.id}" onclick="toggleComments('${post.id}')">💬 التعليقات <span class="badge-num">0</span></button>
+                <button class="react-btn" onclick="sharePost()">🔗 مشاركة</button>
               </div>
-            </div>
-          `;
-          postsContainer.appendChild(card);
+              <div class="comments-panel" id="comments-wrap-${post.id}">
+                <div style="margin-top:6px;"><strong>التعليقات</strong></div>
+                <div class="existing-comments" style="margin-top:6px;"></div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                  <input id="input-comment-${post.id}" placeholder="اكتب تعليقك..." style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,.1);">
+                  <button class="btn" style="flex:0 0 auto;" onclick="submitComment('${post.id}')">أضف</button>
+                </div>
+              </div>`;
+            postsContainer.appendChild(card);
 
-          // فعّل مشغّل الفيديو المخصص للعناصر المُضافة للتو
-          window.__KVP.scan();
+            // ✨ آمنة: حتى لو __KVP غير موجودة، ما نكسر الصفحة
+            try { window.__KVP && window.__KVP.scan && window.__KVP.scan(); } catch(e){ console.warn('KVP scan error (non-fatal)', e); }
 
-          // … باقي التهيئة (تعليقات/عداد)
-          initCommentsCount(post.id);
-          if((i+1)%5===0){
-            const wrapper=document.createElement('div');
-            wrapper.className='ad-slider-wrapper full-span';
-            const slider=document.createElement('div'); slider.className='ad-slider';
-            getRandomAds().forEach(ad=>{
-              const slide=document.createElement('div'); slide.className='ad-slide';
-              slide.innerHTML=`
-                <a href="${ad.link}" target="_blank" rel="noopener">
-                  <div class="ad-circle"><img src="${ad.image}" alt="${ad.name}" loading="lazy"></div>
-                  <div class="ad-name">${ad.name}</div>
-                </a>`;
-              slider.appendChild(slide);
-            });
-            const note=document.createElement('div');
-            note.className='ad-note';
-            note.innerHTML=`لإضافة إعلانك الخاص <a href="https://wa.me/123456789" target="_blank" rel="noopener">اضغط هنا</a>`;
-            wrapper.appendChild(slider);wrapper.appendChild(note);
-            postsContainer.appendChild(wrapper);
-          }
+            if((i+1)%5===0){
+              const wrapper=document.createElement('div'); wrapper.className='ad-slider-wrapper full-span';
+              const slider=document.createElement('div'); slider.className='ad-slider';
+              getRandomAds().forEach(ad=>{ const slide=document.createElement('div'); slide.className='ad-slide';
+                slide.innerHTML=`<a href="${ad.link}" target="_blank" rel="noopener"><div class="ad-circle"><img src="${ad.image}" alt="${ad.name}" loading="lazy"></div><div class="ad-name">${ad.name}</div></a>`;
+                slider.appendChild(slide);
+              });
+              const note=document.createElement('div'); note.className='ad-note'; note.innerHTML=`لإضافة إعلانك الخاص <a href="https://wa.me/123456789" target="_blank" rel="noopener">اضغط هنا</a>`;
+              wrapper.appendChild(slider); wrapper.appendChild(note); postsContainer.appendChild(wrapper);
+            }
+          });
+          observePosts(); updateVisibility();
+        }catch(e){
+          console.error('render posts error', e);
+          postsContainer.innerHTML=`<div class="error">حدث خطأ في العرض، حدّث الصفحة.</div>`;
         }
-
-        observePosts();
-        updateVisibility();
       }, err=>{
         console.error("load posts error",err);
         postsContainer.innerHTML=`<div class="error">فشل جلب المنشورات. حاول لاحقًا.</div>`;
       });
 
       async function initCommentsCount(postId){
-        try{
-          const coll=collection(db,"posts",postId,"comments");
-          const snap=await getCountFromServer(coll);
-          const count=snap.data().count||0;
-          const badge=document.querySelector(`#toggle-${postId} .badge-num`);
-          if(badge) badge.textContent=count;
+        try{ const coll=collection(db,"posts",postId,"comments"); const snap=await getCountFromServer(coll);
+             const count=snap.data().count||0; const badge=document.querySelector(`#toggle-${postId} .badge-num`); if(badge) badge.textContent=count;
         }catch(e){console.warn("initCommentsCount error",e);}
       }
 
       window.toggleComments=function(postId){
-        const panel=document.getElementById(`comments-wrap-${postId}`);
-        if(!panel) return;
-        const visible=panel.style.display==="block";
-        panel.style.display=visible?"none":"block";
-        if(visible) return;
-
+        const panel=document.getElementById(`comments-wrap-${postId}`); if(!panel) return;
+        const visible=panel.style.display==="block"; panel.style.display=visible?"none":"block"; if(visible) return;
         if(window.commentUnsubMap?.[postId]) return;
         const container=panel.querySelector(".existing-comments");
         const q=query(collection(db,"posts",postId,"comments"),orderBy("createdAt","asc"));
         const unsub=onSnapshot(q,snap=>{
           container.innerHTML=""; let count=0;
-          snap.docs.forEach(d=>{
-            const c=d.data();
-            const div=document.createElement("div");
-            div.className="comment";
-            const time=c.createdAt&&c.createdAt.toDate?timeAgo(c.createdAt.toDate()):"";
-            div.innerHTML=`<div><strong>${escapeHtml(c.author||"مستخدم")}</strong> <small>${time}</small></div><div>${escapeHtml(c.text||"")}</div>`;
-            container.appendChild(div);count++;
-          });
-          const badge=document.querySelector(`#toggle-${postId} .badge-num`);
-          if(badge) badge.textContent=count;
+          snap.docs.forEach(d=>{ const c=d.data(); const div=document.createElement("div"); div.className="comment";
+            const time=c.createdAt&&c.createdAt.toDate?timeAgo(c.createdAt.toDate()):""; div.innerHTML=`<div><strong>${escapeHtml(c.author||"مستخدم")}</strong> <small>${time}</small></div><div>${escapeHtml(c.text||"")}</div>`;
+            container.appendChild(div); count++; });
+          const badge=document.querySelector(`#toggle-${postId} .badge-num`); if(badge) badge.textContent=count;
         },e=>console.warn("comments error",e));
-        window.commentUnsubMap = window.commentUnsubMap || {};
-        window.commentUnsubMap[postId]=unsub;
+        window.commentUnsubMap=window.commentUnsubMap||{}; window.commentUnsubMap[postId]=unsub;
       };
 
       window.submitComment=async function(postId){
-        const input=document.getElementById(`input-comment-${postId}`);
-        if(!input) return;
-        const text=input.value.trim();
-        if(!text) return;
-        try{
-          await addDoc(collection(db,"posts",postId,"comments"),{text,author:"مستخدم",createdAt:serverTimestamp()});
-          input.value="";
-        }catch(e){
-          console.error("add comment error",e);
-          window.showToast?.("تعذّر إضافة التعليق، حاول لاحقًا.");
-        }
+        const input=document.getElementById(`input-comment-${postId}`); if(!input) return;
+        const text=input.value.trim(); if(!text) return;
+        try{ await addDoc(collection(db,"posts",postId,"comments"),{text,author:"مستخدم",createdAt:serverTimestamp()}); input.value=""; }
+        catch(e){ console.error("add comment error",e); window.showToast?.("تعذّر إضافة التعليق، حاول لاحقًا."); }
       };
 
       const votes=JSON.parse(localStorage.getItem("votes")||"{}");
       function applyVoteState(postId){
-        const choice=votes[postId];
-        const love=document.getElementById(`love-${postId}`);
-        const dislike=document.getElementById(`dislike-${postId}`);
-        if(!love||!dislike) return;
-        love.disabled=false;dislike.disabled=false;love.classList.remove('active');dislike.classList.remove('active');
+        const choice=votes[postId]; const love=document.getElementById(`love-${postId}`); const dislike=document.getElementById(`dislike-${postId}`);
+        if(!love||!dislike) return; love.disabled=false;dislike.disabled=false;love.classList.remove('active');dislike.classList.remove('active');
         if(choice){love.disabled=true;dislike.disabled=true; if(choice==='loves') love.classList.add('active'); if(choice==='dislikes') dislike.classList.add('active');}
       }
       window.applyVoteState=applyVoteState;
@@ -757,42 +500,22 @@
       window.vote=async function(postId,field,btn){
         const votes=JSON.parse(localStorage.getItem("votes")||"{}");
         if(votes[postId]){window.showToast?.("لقد صوّتَّ مسبقًا لهذا المنشور.");return;}
-        try{
-          const span=btn.querySelector('.count');
-          span.textContent=(parseInt(span.textContent)||0)+1;
-          btn.classList.add('active');
-          document.getElementById(`love-${postId}`).disabled=true;
-          document.getElementById(`dislike-${postId}`).disabled=true;
-          await updateDoc(doc(db,"posts",postId),{[field]:increment(1)});
-          votes[postId]=field; localStorage.setItem("votes",JSON.stringify(votes));
-        }catch(e){
-          console.error("vote error",e);
-          window.showToast?.("تعذّر تسجيل التصويت، حاول لاحقًا."); applyVoteState(postId);
-        }
+        try{ const span=btn.querySelector('.count'); span.textContent=(parseInt(span.textContent)||0)+1; btn.classList.add('active');
+             document.getElementById(`love-${postId}`).disabled=true; document.getElementById(`dislike-${postId}`).disabled=true;
+             await updateDoc(doc(db,"posts",postId),{[field]:increment(1)}); votes[postId]=field; localStorage.setItem("votes",JSON.stringify(votes)); }
+        catch(e){ console.error("vote error",e); window.showToast?.("تعذّر تسجيل التصويت، حاول لاحقًا."); applyVoteState(postId); }
       };
+
+      // بعد بناء البطاقات مباشرة نحدّث عداد التعليقات
+      const initObserver=new MutationObserver(()=>{ document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); }); });
+      initObserver.observe(postsContainer,{childList:true});
+    } else {
+      // بدون قاعدة بيانات: ما نسوي شيء، لكن ما نكسر الصفحة
+      postsContainer.innerHTML=`<div class="error">غير متصل بقاعدة البيانات.</div>`;
     }
 
     function timeAgo(date){const diff=Math.floor((Date.now()-date.getTime())/1000);if(diff<60)return diff+" ثواني";if(diff<3600)return Math.floor(diff/60)+" دقائق";if(diff<86400)return Math.floor(diff/3600)+" ساعات";return Math.floor(diff/86400)+" أيام";}
     function escapeHtml(str){return String(str).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
-
-    // بعد تحميل/تحديث البطاقات، فعّل KVP لو لم توجد بيانات
-    if (!db) { window.__KVP.scan(); }
-
-    // بحث
-    let searchTimeout;
-    document.getElementById("searchBar").addEventListener("input", function(){
-      clearTimeout(searchTimeout);
-      searchText=this.value.toLowerCase();
-      searchTimeout=setTimeout(updateVisibility,250);
-    });
-    function updateVisibility(){
-      const posts=document.querySelectorAll(".post");
-      posts.forEach(p=>{
-        const matchesType = (activeFilter==='الكل') || (p.dataset.type===activeFilter);
-        const matchesText = !searchText || p.innerText.toLowerCase().includes(searchText);
-        p.style.display = (matchesType && matchesText) ? '' : 'none';
-      });
-    }
   </script>
 </body>
 </html>
