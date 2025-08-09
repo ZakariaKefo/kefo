@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2196f3" id="theme-color" />
+  <title>منصة الخدمات - KeFo Posts</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#ffffff;--fg:#000;--card-bg:#f9f9f9;--header-bg:#2196f3;--primary:#2196f3;--secondary:#0d47a1;--muted:#666;
+      --radius:12px;--shadow:0 8px 25px rgba(0,0,0,.08);--transition:.3s;--font:'Cairo',sans-serif;
+      --danger:#c62828;--love:#e91e63;--chip:#eef3ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);transition:var(--transition);min-height:100vh;font-size:clamp(14px,1.8vw,16px)}
+    .dark{--bg:#0f1218;--fg:#e5e5e5;--card-bg:#1f2430;--header-bg:#1f2a50;--primary:#4f8cff;--secondary:#223a7a;--muted:#999;--danger:#ef5350;--love:#ff5c93;--chip:#1f2a50}
+    .pink{--bg:#ffe6f0;--fg:#880e4f;--card-bg:#ffe6f0;--header-bg:#ad1457;--primary:#d81b60;--secondary:#880e4f;--muted:#aa6688;--danger:#c2185b;--love:#ff2f7a;--chip:#ffd0e1}
+    a{color:var(--primary);text-decoration:none}
+
+    /* إصلاحات عرض الموبايل */
+    html, body { width: 100%; overflow-x: hidden; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    img, iframe, video { max-width: 100%; height: auto; }
+    .post, .ad-slider-wrapper, .header, .bottom-nav, .modal { max-width: 100vw; }
+    .post p, .ad-name { overflow-wrap: anywhere; word-break: break-word; }
+    iframe[src*="facebook.com/plugins/video.php"] { width:100% !important; max-width:100% !important; }
+
+    /* Header */
+    .header{position:fixed;inset-inline:0;top:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px;background:var(--header-bg);color:#fff;z-index:60}
+    #searchBar{flex:1;padding:10px;border-radius:8px;border:none;min-width:160px;font-size:1rem}
+    .header-right{margin-inline-start:auto;display:flex;gap:8px}
+    .install-btn{display:none;align-items:center;gap:6px;background:#fff;color:#000;border:none;border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:700}
+
+    /* Filters (chips) */
+    .filters{position:sticky;top:58px;z-index:55;background:transparent;padding:8px 0;margin:0 auto;max-width:1280px}
+    .chips{display:flex;gap:8px;overflow:auto;padding:8px 10px}
+    .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,0,0,.06);background:var(--chip);color:#fff;cursor:pointer;white-space:nowrap;opacity:.9}
+    .chip.light{color:#0d47a1}
+    body.dark .chip{color:#cfe3ff}
+    .chip.active{background:#fff;color:#000;border-color:transparent}
+    body.dark .chip.active{background:#2a3350;color:#fff}
+    body.pink .chip.active{background:#fff0f6;color:#880e4f}
+
+    /* Content & Grid */
+    .content{padding:120px 10px 140px;margin:0 auto;width:100%;max-width:1280px}
+    #postsContainer{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:900px){.content{padding:130px 20px 40px}#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
+    @media (min-width:1400px){#postsContainer{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
+
+    /* Post card */
+    .post{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .4s;opacity:0;transform:translateY(10px)}
+    .post.visible{opacity:1;transform:translateY(0)}
+    .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .badge{font-size:12px;padding:4px 8px;border-radius:999px;color:#fff}
+    .b-help{background:#00897b}.b-complaint{background:#b71c1c}.b-edu{background:#1565c0}.b-health{background:#2e7d32}.b-misc{background:#6d4c41}
+    .post h4{margin:0 0 6px;font-size:clamp(16px,2vw,18px)}
+    .post p{margin:8px 0;white-space:pre-wrap;line-height:1.65}
+
+    /* Media */
+    img{width:100%;height:auto;border-radius:10px;margin-top:10px;display:block}
+    iframe{width:100%;border:0;border-radius:10px;margin-top:10px;display:block;aspect-ratio:16/9;height:auto}
+    .embed-wrap{margin-top:10px}
+
+    /* YouTube Lite */
+    .yt-lite{position:relative;cursor:pointer;border-radius:10px;overflow:hidden;background:#000}
+    .yt-lite::before{content:"";display:block;padding-top:56.25%}
+    .yt-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .yt-play{position:absolute;inset:0;margin:auto;width:68px;height:48px;border-radius:14px;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
+    .yt-play:after{content:"";border-style:solid;border-width:12px 0 12px 18px;border-color:transparent transparent transparent #fff;margin-inline-start:3px}
+
+    /* Reactions */
+    .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
+    .react-btn{border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:8px 10px;border-radius:10px;transition:.2s}
+    .react-btn:hover{background:rgba(0,0,0,.05)}
+    .react-btn[disabled]{opacity:.6;cursor:not-allowed}
+    .react-love i{color:var(--love)} .react-dislike i{color:var(--danger)} .count{font-weight:700}
+    .react-love.active{animation:pop .35s ease} @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+    .react-dislike.active{animation:shake .35s ease} @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+
+    /* Comments */
+    .comments-panel{background:rgba(0,0,0,.03);padding:10px;border-radius:8px;margin-top:12px;display:none}
+    .comment{padding:6px 0;border-bottom:1px solid rgba(0,0,0,.1)}
+    .comment:last-child{border-bottom:none}
+    .comment small{color:var(--muted);margin-inline-start:6px}
+    .comments-toggle{border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:6px 8px;border-radius:8px}
+    .comments-toggle:hover{background:rgba(0,0,0,.05)}
+    .badge-num{display:inline-block;min-width:18px;padding:0 6px;height:18px;line-height:18px;font-size:12px;border-radius:10px;background:var(--primary);color:#fff;text-align:center}
+
+    /* Ads */
+    .ad-slider-wrapper{margin:4px 0;background:var(--card-bg);padding:10px;border-radius:10px;box-shadow:var(--shadow)}
+    .ad-slider{display:flex;gap:15px;overflow-x:auto;padding-bottom:5px;scroll-behavior:smooth}
+    .ad-slide{flex:0 0 140px;text-align:center}
+    .ad-slide a{display:block}
+    .ad-circle{width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;background:#eee}
+    .ad-circle img{width:100%;height:100%;object-fit:cover}
+    .ad-name{font-size:14px;margin-top:4px}
+    .ad-note{background:#ffeedd;padding:10px;text-align:center;color:#333;font-weight:600;margin-top:8px;border-radius:6px}
+    .full-span{grid-column:1/-1}
+
+    /* Bottom nav (mobile only) */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:var(--secondary);padding:10px 0;border-radius:25px 25px 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.3);z-index:50}
+    .nav-btn{text-align:center;color:#fff;font-size:12px;cursor:pointer}.nav-btn i{font-size:20px;display:block;margin-bottom:4px}
+
+    /* Modals + Toast */
+    .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;padding:10px;overflow:auto}
+    .modal{background:var(--card-bg);border-radius:10px;width:min(520px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg)}
+    .close-btn{position:absolute;top:8px;inset-inline-end:10px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--fg)}
+    .btn{padding:10px 15px;border:none;border-radius:6px;cursor:pointer;background:var(--primary);color:#fff;font-weight:600}
+    .input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,.1);margin-bottom:12px;background:#fff;font-family:inherit}
+    .label{font-weight:600;margin-top:5px;display:block}
+    .error{background:#f8d7da;color:#842029;padding:10px;border-radius:6px;margin-bottom:12px}
+
+    .input-row{position:relative}
+    .clear-btn{position:absolute;top:50%;inset-inline-end:8px;transform:translateY(-50%);border:none;background:transparent;cursor:pointer;font-size:16px;opacity:.7}
+
+    .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%) translateY(20px);background:var(--header-bg);color:#fff;padding:10px 14px;border-radius:8px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:transform .3s,opacity .3s;z-index:200;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis;font-size:.95rem}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    .skeleton{background:linear-gradient(90deg, rgba(0,0,0,.06), rgba(0,0,0,.12), rgba(0,0,0,.06));background-size:200% 100%;animation:shimmer 1.2s infinite}
+    @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+    .skeleton-card{height:280px;border-radius:12px}
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <input id="searchBar" type="text" placeholder="ابحث عن منشور...">
+    <div class="header-right">
+      <button id="installBtn" class="install-btn" title="تثبيت التطبيق">📥 تثبيت</button>
+      <div class="nav-btn" onclick="openNewPost()"><i>➕</i><div style="font-size:11px;">منشور</div></div>
+      <div class="nav-btn" onclick="openSettings()"><i>⚙️</i><div style="font-size:11px;">إعدادات</div></div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div id="chips" class="chips"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div id="postsContainer"></div>
+  </div>
+
+  <!-- Bottom nav (mobile) -->
+  <div class="bottom-nav">
+    <div class="nav-btn" onclick="openNewPost()"><i>➕</i>إضافة</div>
+    <div class="nav-btn" onclick="showToast('قسم الدردشة قيد التطوير')"><i>💬</i>دردشة</div>
+    <div class="nav-btn" onclick="showToast('الأقسام قيد التطوير')"><i>📂</i>الأقسام</div>
+    <div class="nav-btn" onclick="showToast('ملفي الشخصي قيد التطوير')"><i>👤</i>الملف</div>
+    <div class="nav-btn" onclick="openSettings()"><i>⚙️</i>إعدادات</div>
+  </div>
+
+  <!-- New post modal -->
+  <div id="newPostModal" class="modal-backdrop">
+    <div class="modal">
+      <button class="close-btn" onclick="closeNewPost()">✖</button>
+      <h3>نشر منشور جديد</h3>
+      <div id="postError" style="display:none;" class="error"></div>
+
+      <label class="label">نوع المنشور *</label>
+      <select id="postType" class="input">
+        <option value="">اختر نوع المنشور</option>
+        <option value="ساعدني">ساعدني</option>
+        <option value="شكوى وفساد">شكوى وفساد</option>
+        <option value="تعليم">تعليم</option>
+        <option value="صحة">صحة</option>
+        <option value="منشورات متنوعة">منشورات متنوعة</option>
+      </select>
+
+      <label class="label">المحتوى *</label>
+      <textarea id="postContent" class="input" rows="3" placeholder="اكتب المنشور..."></textarea>
+
+      <!-- Media: واحد فقط -->
+      <label class="label">رابط صورة (اختياري، يُلغِي باقي الروابط)</label>
+      <div class="input-row">
+        <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/image.jpg">
+        <button class="clear-btn" type="button" onclick="clearMedia('imageURL')">✖</button>
+      </div>
+
+      <label class="label">رابط YouTube (اختياري، يُلغِي باقي الروابط)</label>
+      <div class="input-row">
+        <input id="youtubeURL" type="url" class="input media-input" placeholder="https://www.youtube.com/watch?v=... أو youtu.be/...">
+        <button class="clear-btn" type="button" onclick="clearMedia('youtubeURL')">✖</button>
+      </div>
+
+      <label class="label">رابط Facebook (فيديو) (اختياري، يُلغِي باقي الروابط)</label>
+      <div class="input-row">
+        <input id="facebookURL" type="url" class="input media-input" placeholder="https://www.facebook.com/.../videos/... أو watch/?v=...">
+        <button class="clear-btn" type="button" onclick="clearMedia('facebookURL')">✖</button>
+      </div>
+
+      <button class="btn" onclick="submitPost()">نشر</button>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div id="settingsModal" class="modal-backdrop">
+    <div class="modal">
+      <button class="close-btn" onclick="closeSettings()">✖</button>
+      <h3>إعدادات الوضع</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" style="flex:1" onclick="setMode('light')">نهاري</button>
+        <button class="btn" style="flex:1" onclick="setMode('dark')">ليلي</button>
+        <button class="btn" style="flex:1" onclick="setMode('pink')">بناتي</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info modal -->
+  <div id="infoModal" class="modal-backdrop">
+    <div class="modal">
+      <button class="close-btn" onclick="closeInfo()">✖</button>
+      <h3 id="infoTitle">تنبيه</h3>
+      <div id="infoBody" style="margin-top:8px;"></div>
+      <div style="text-align:end;margin-top:12px;">
+        <button class="btn" onclick="closeInfo()">حسنًا</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Firebase + logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, query, orderBy, onSnapshot,
+      addDoc, updateDoc, doc, serverTimestamp, getCountFromServer, increment
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA15okly94Qb9XXSMdVdhGg5D4lMqLW1Iw",
+      authDomain: "kefo-posts.firebaseapp.com",
+      projectId: "kefo-posts",
+      storageBucket: "kefo-posts.appspot.com",
+      messagingSenderId: "647282320196",
+      appId: "1:647282320196:web:9991aa9db6dfec8eb72d11",
+      measurementId: "G-R9ZQ566K4H"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const postsContainer = document.getElementById("postsContainer");
+    const chipsEl = document.getElementById("chips");
+    const filterTypes = [
+      {key:'الكل', badge:'',  label:'الكل'},
+      {key:'ساعدني', badge:'b-help',      label:'ساعدني'},
+      {key:'شكوى وفساد', badge:'b-complaint', label:'شكوى وفساد'},
+      {key:'تعليم',   badge:'b-edu',   label:'تعليم'},
+      {key:'صحة',     badge:'b-health', label:'صحة'},
+      {key:'منشورات متنوعة', badge:'b-misc',  label:'منوّع'}
+    ];
+
+    let activeFilter = 'الكل';
+    let searchText = '';
+
+    function buildChips(){
+      chipsEl.innerHTML = '';
+      filterTypes.forEach(t=>{
+        const b = document.createElement('button');
+        b.className = 'chip light' + (t.key===activeFilter?' active':'');
+        b.textContent = t.label;
+        b.onclick = ()=>{ activeFilter = t.key; buildChips(); updateVisibility(); };
+        chipsEl.appendChild(b);
+      });
+    }
+    buildChips();
+
+    function showSkeletons(n=6){
+      postsContainer.innerHTML='';
+      for(let i=0;i<n;i++){
+        const sk=document.createElement('div');
+        sk.className='skeleton skeleton-card';
+        postsContainer.appendChild(sk);
+      }
+    }
+    showSkeletons();
+
+    function toYouTubeId(u){
+      try{const url=new URL(u);let v=url.searchParams.get('v');if(!v){const p=url.pathname.split('/'); v=p.pop()||p.pop();}return v||null;}catch{return null;}
+    }
+    function toYouTubeEmbed(u){ const id=toYouTubeId(u); return id?`https://www.youtube.com/embed/${id}`:null; }
+    function toYouTubeThumb(u){ const id=toYouTubeId(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
+    function toFacebookVideoEmbed(u){ try{ return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&show_text=false&width=720`; }catch{return null;} }
+
+    function renderYouTubeLite(postId, ytUrl){
+      const thumb=toYouTubeThumb(ytUrl);
+      const targetId=`yt-lite-${postId}`;
+      if(!thumb){ const src=toYouTubeEmbed(ytUrl); return src?`<iframe src="${src}" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>`:''; }
+      return `
+        <div class="yt-lite" id="${targetId}" onclick="loadYouTube('${targetId}','${toYouTubeId(ytUrl)}')">
+          <img class="yt-thumb" alt="YouTube thumbnail" src="${thumb}" loading="lazy">
+          <div class="yt-play"></div>
+        </div>`;
+    }
+    window.loadYouTube=function(targetId,vid){
+      const el=document.getElementById(targetId);
+      if(!el) return;
+      el.outerHTML = `<iframe src="https://www.youtube.com/embed/${vid}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>`;
+    };
+
+    function renderMedia(post){
+      let html="";
+      if(post.imageURL) html+=`<img src="${post.imageURL}" alt="صورة" loading="lazy">`;
+      if(post.youtubeURL) html+=`<div class="embed-wrap">${renderYouTubeLite(post.id, post.youtubeURL)}</div>`;
+      if(post.facebookURL){ const f=toFacebookVideoEmbed(post.facebookURL); if(f) html+=`<iframe src="${f}" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>`; }
+      return html;
+    }
+
+    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
+    function observePosts(){ document.querySelectorAll(".post").forEach(p=>observer.observe(p)); }
+
+    let searchTimeout;
+    document.getElementById("searchBar").addEventListener("input", function(){
+      clearTimeout(searchTimeout);
+      searchText=this.value.toLowerCase();
+      searchTimeout=setTimeout(updateVisibility,250);
+    });
+
+    function updateVisibility(){
+      const posts=document.querySelectorAll(".post");
+      posts.forEach(p=>{
+        const matchesType = (activeFilter==='الكل') || (p.dataset.type===activeFilter);
+        const matchesText = !searchText || p.innerText.toLowerCase().includes(searchText);
+        p.style.display = (matchesType && matchesText) ? '' : 'none';
+      });
+      document.querySelectorAll('.ad-slider-wrapper').forEach(a=>a.style.display='');
+    }
+
+    const adsPool=[
+      {name:"إعلان 1",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/1"},
+      {name:"إعلان 2",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/2"},
+      {name:"إعلان 3",image:"https://via.placeholder.com/120",link:"https://example.com/3"},
+      {name:"إعلان 4",image:"https://via.placeholder.com/120",link:"https://example.com/4"},
+      {name:"إعلان 5",image:"https://via.placeholder.com/120",link:"https://example.com/5"},
+      {name:"إعلان 6",image:"https://via.placeholder.com/120",link:"https://example.com/6"}
+    ];
+    function getRandomAds(){const copy=[...adsPool];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy.slice(0,4);}
+
+    const commentUnsubMap={};
+
+    const { collection, orderBy, query, onSnapshot, getCountFromServer } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+
+    const postsQ=query(collection(db,"posts"),orderBy("timestamp","desc"));
+    onSnapshot(postsQ, async snap=>{
+      const posts=snap.docs.map(d=>({id:d.id,...d.data()}));
+      postsContainer.innerHTML = posts.length ? "" : `<div class="error">لا توجد منشورات حالياً.</div>`;
+
+      for(let i=0;i<posts.length;i++){
+        const post=posts[i];
+        const loves=post.loves||0, dislikes=post.dislikes||0;
+        const badgeClass =
+          post.type==="ساعدني" ? "b-help" :
+          post.type==="شكوى وفساد" ? "b-complaint" :
+          post.type==="تعليم" ? "b-edu" :
+          post.type==="صحة" ? "b-health" : "b-misc";
+
+        const card=document.createElement('div');
+        card.className='post';
+        card.dataset.type=post.type||'';
+        card.dataset.postId=post.id;
+
+        card.innerHTML=`
+          <div class="post-header">
+            <span class="badge ${badgeClass}">${post.type||'منوّع'}</span>
+          </div>
+          <h4>${post.type||''}</h4>
+          <p>${post.content||''}</p>
+          ${renderMedia(post)}
+          <div class="reactions">
+            <button class="react-btn react-love" id="love-${post.id}" onclick="vote('${post.id}','loves', this)">
+              <i>❤️</i><span class="count">${loves}</span>
+            </button>
+            <button class="react-btn react-dislike" id="dislike-${post.id}" onclick="vote('${post.id}','dislikes', this)">
+              <i>👎</i><span class="count">${dislikes}</span>
+            </button>
+
+            <button class="comments-toggle" id="toggle-${post.id}" onclick="toggleComments('${post.id}')" title="عرض/إخفاء التعليقات">
+              💬 التعليقات <span class="badge-num">0</span>
+            </button>
+            <button class="react-btn" onclick="sharePost()">🔗 مشاركة</button>
+          </div>
+          <div class="comments-panel" id="comments-wrap-${post.id}">
+            <div style="margin-top:6px;"><strong>التعليقات</strong></div>
+            <div class="existing-comments" style="margin-top:6px;"></div>
+            <div style="margin-top:8px;display:flex;gap:6px;">
+              <input id="input-comment-${post.id}" placeholder="اكتب تعليقك..." style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,.1);">
+              <button class="btn" style="flex:0 0 auto;" onclick="submitComment('${post.id}')">أضف</button>
+            </div>
+          </div>
+        `;
+        postsContainer.appendChild(card);
+
+        applyVoteState(post.id);
+        initCommentsCount(post.id);
+
+        if((i+1)%5===0){
+          const wrapper=document.createElement('div');
+          wrapper.className='ad-slider-wrapper full-span';
+          const slider=document.createElement('div'); slider.className='ad-slider';
+          getRandomAds().forEach(ad=>{
+            const slide=document.createElement('div'); slide.className='ad-slide';
+            slide.innerHTML=`
+              <a href="${ad.link}" target="_blank" rel="noopener">
+                <div class="ad-circle"><img src="${ad.image}" alt="${ad.name}" loading="lazy"></div>
+                <div class="ad-name">${ad.name}</div>
+              </a>`;
+            slider.appendChild(slide);
+          });
+          const note=document.createElement('div');
+          note.className='ad-note';
+          note.innerHTML=`لإضافة إعلانك الخاص <a href="https://wa.me/123456789" target="_blank" rel="noopener">اضغط هنا</a>`;
+          wrapper.appendChild(slider);wrapper.appendChild(note);
+          postsContainer.appendChild(wrapper);
+        }
+      }
+
+      observePosts();
+      updateVisibility();
+    }, err=>{
+      console.error("load posts error",err);
+      postsContainer.innerHTML=`<div class="error">فشل جلب المنشورات. حاول لاحقًا.</div>`;
+    });
+
+    async function initCommentsCount(postId){
+      try{
+        const { collection, getCountFromServer } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const coll=collection(db,"posts",postId,"comments");
+        const snap=await getCountFromServer(coll);
+        const count=snap.data().count||0;
+        const badge=document.querySelector(`#toggle-${postId} .badge-num`);
+        if(badge) badge.textContent=count;
+      }catch(e){console.warn("initCommentsCount error",e);}
+    }
+
+    window.toggleComments=async function(postId){
+      const panel=document.getElementById(`comments-wrap-${postId}`);
+      if(!panel) return;
+      const visible=panel.style.display==="block";
+      panel.style.display=visible?"none":"block";
+      if(visible) return;
+
+      if(commentUnsubMap[postId]) return;
+      const { collection, orderBy, query, onSnapshot } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const container=panel.querySelector(".existing-comments");
+      const q=query(collection(db,"posts",postId,"comments"),orderBy("createdAt","asc"));
+      const unsub=onSnapshot(q,snap=>{
+        container.innerHTML="";
+        let count=0;
+        snap.docs.forEach(d=>{
+          const c=d.data();
+          const div=document.createElement("div");
+          div.className="comment";
+          const time=c.createdAt&&c.createdAt.toDate?timeAgo(c.createdAt.toDate()):"";
+          div.innerHTML=`<div><strong>${escapeHtml(c.author||"مستخدم")}</strong> <small>${time}</small></div><div>${escapeHtml(c.text||"")}</div>`;
+          container.appendChild(div);count++;
+        });
+        const badge=document.querySelector(`#toggle-${postId} .badge-num`);
+        if(badge) badge.textContent=count;
+      },e=>console.warn("comments error",e));
+      commentUnsubMap[postId]=unsub;
+    };
+
+    window.submitComment=async function(postId){
+      const input=document.getElementById(`input-comment-${postId}`);
+      if(!input) return;
+      const text=input.value.trim();
+      if(!text) return;
+      try{
+        const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        await addDoc(collection(db,"posts",postId,"comments"),{text,author:"مستخدم",createdAt:serverTimestamp()});
+        input.value="";
+      }catch(e){
+        console.error("add comment error",e);
+        showToast("تعذّر إضافة التعليق، حاول لاحقًا.");
+      }
+    };
+
+    const votes=JSON.parse(localStorage.getItem("votes")||"{}");
+    function applyVoteState(postId){
+      const choice=votes[postId];
+      const love=document.getElementById(`love-${postId}`);
+      const dislike=document.getElementById(`dislike-${postId}`);
+      if(!love||!dislike) return;
+      love.classList.remove('active');dislike.classList.remove('active');
+      love.disabled=false;dislike.disabled=false;
+      if(choice){
+        love.disabled=true;dislike.disabled=true;
+        if(choice==='loves') love.classList.add('active');
+        if(choice==='dislikes') dislike.classList.add('active');
+      }
+    }
+
+    window.vote=async function(postId,field,btn){
+      if(votes[postId]){showToast("لقد صوّتَّ مسبقًا لهذا المنشور.");return;}
+      try{
+        const span=btn.querySelector('.count');
+        span.textContent=(parseInt(span.textContent)||0)+1;
+        btn.classList.add('active');
+        document.getElementById(`love-${postId}`).disabled=true;
+        document.getElementById(`dislike-${postId}`).disabled=true;
+        await updateDoc(doc(db,"posts",postId),{[field]:increment(1)});
+        votes[postId]=field; localStorage.setItem("votes",JSON.stringify(votes));
+      }catch(e){
+        console.error("vote error",e);
+        showToast("تعذّر تسجيل التصويت، حاول لاحقًا."); applyVoteState(postId);
+      }
+    };
+
+    window.sharePost=function(){
+      const text="أدعوك للمشاركة على منصة KeFo Posts عبر الضغط على الرابط التالي: "+window.location.href;
+      if(navigator.share){navigator.share({text}).catch(()=>showToast("تعذّر المشاركة."));}
+      else{navigator.clipboard.writeText(text).then(()=>showToast("تم نسخ الرابط!")).catch(()=>showToast("تعذّر النسخ."));}
+    };
+
+    window.submitPost=async function(){
+      const type=document.getElementById("postType").value;
+      const content=document.getElementById("postContent").value.trim();
+      const imageURL=document.getElementById("imageURL").value.trim();
+      const youtubeURL=document.getElementById("youtubeURL").value.trim();
+      const facebookURL=document.getElementById("facebookURL").value.trim();
+      const errorDiv=document.getElementById("postError");
+      errorDiv.style.display="none";
+      if(!type||!content){errorDiv.textContent="الرجاء ملء نوع المنشور والمحتوى";errorDiv.style.display="block";return;}
+      const picked=[imageURL,youtubeURL,facebookURL].filter(Boolean).length;
+      if(picked>1){errorDiv.textContent="يرجى إضافة رابط واحد فقط: صورة أو YouTube أو Facebook.";errorDiv.style.display="block";return;}
+      try{
+        await addDoc(collection(db,"posts"),{
+          type,content,
+          imageURL:imageURL||null,
+          youtubeURL:youtubeURL||null,
+          facebookURL:facebookURL||null,
+          loves:0,dislikes:0,
+          timestamp:serverTimestamp()
+        });
+        closeNewPost(); showToast("تم نشر المنشور بنجاح");
+      }catch(e){console.error("submitPost error",e);errorDiv.textContent="فشل النشر، حاول لاحقًا.";errorDiv.style.display="block";}
+    };
+
+    function timeAgo(date){const diff=Math.floor((Date.now()-date.getTime())/1000);if(diff<60)return diff+" ثواني";if(diff<3600)return Math.floor(diff/60)+" دقائق";if(diff<86400)return Math.floor(diff/3600)+" ساعات";return Math.floor(diff/86400)+" أيام";}
+    function escapeHtml(str){return String(str).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
+
+    const themeKey="kefo_theme";
+    function applyTheme(t){
+      document.body.classList.remove("light","dark","pink");
+      if(t==="dark")document.body.classList.add("dark");
+      else if(t==="pink")document.body.classList.add("pink");
+      else document.body.classList.add("light");
+      localStorage.setItem(themeKey,t);
+      updateThemeColorMeta();
+    }
+    function updateThemeColorMeta(){
+      const meta=document.getElementById('theme-color');
+      const mode=localStorage.getItem(themeKey)||'light';
+      const color = mode==='dark' ? '#1f2a50' : (mode==='pink' ? '#ad1457' : '#2196f3');
+      if(meta) meta.setAttribute('content', color);
+    }
+    window.setMode=function(mode){
+      applyTheme(mode);
+      showToast(mode==='dark'?'تم تفعيل الوضع الليلي':mode==='pink'?'تم تفعيل الوضع البناتي':'تم تفعيل الوضع النهاري');
+    };
+    const stored=localStorage.getItem(themeKey)||"light"; applyTheme(stored);
+    updateThemeColorMeta();
+  </script>
+
+  <!-- Controls + Toast/Modal + PWA -->
+  <script>
+    function openNewPost(){
+      document.getElementById("newPostModal").style.display="flex";
+      document.body.style.overflow="hidden";
+      ['imageURL','youtubeURL','facebookURL'].forEach(id=>document.getElementById(id).value="");
+      document.querySelectorAll('.input-row').forEach(r=>r.style.display='');
+    }
+    function closeNewPost(){document.getElementById("newPostModal").style.display="none";document.body.style.overflow="";}
+
+    function openSettings(){document.getElementById("settingsModal").style.display="flex";document.body.style.overflow="hidden";}
+    function closeSettings(){document.getElementById("settingsModal").style.display="none";document.body.style.overflow="";}
+
+    window.showToast=(msg)=>{const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>t.classList.remove('show'),2500);};
+
+    function showInfo(title,message){document.getElementById('infoTitle').textContent=title||'تنبيه';document.getElementById('infoBody').textContent=message||'';document.getElementById('infoModal').style.display='flex';document.body.style.overflow="hidden";}
+    function closeInfo(){document.getElementById('infoModal').style.display='none';document.body.style.overflow="";}
+    window.showInfo=showInfo;window.closeInfo=closeInfo;
+
+    document.addEventListener('contextmenu',e=>e.preventDefault());
+    document.addEventListener('selectstart',e=>e.preventDefault());
+    document.addEventListener('touchstart',function(e){window.longTouch=setTimeout(()=>e.preventDefault(),500);},{passive:false});
+    document.addEventListener('touchend',()=>clearTimeout(window.longTouch));
+
+    const mediaInputs=Array.from(document.querySelectorAll('.media-input'));
+    mediaInputs.forEach(inp=>inp.addEventListener('input',handleMediaInputs));
+    function handleMediaInputs(){
+      const filled=mediaInputs.find(i=>i.value.trim());
+      mediaInputs.forEach(i=>{
+        if(!filled||i===filled){i.closest('.input-row').style.display='';}
+        else{i.closest('.input-row').style.display='none';}
+      });
+    }
+    window.clearMedia=function(id){const el=document.getElementById(id);if(!el)return;el.value="";handleMediaInputs();};
+
+    /* ===== PWA: Service Worker + زر التثبيت ===== */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
+        installBtn.style.display = 'inline-flex';
+      }
+    });
+
+    installBtn?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice.catch(()=>null);
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+      if (choice && choice.outcome === 'accepted') {
+        showToast('جاري تثبيت التطبيق…');
+      } else {
+        showToast('تم إلغاء التثبيت.');
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      showToast('تم تثبيت التطبيق بنجاح ✅');
+      installBtn.style.display = 'none';
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      installBtn.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
