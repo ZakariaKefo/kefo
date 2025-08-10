@@ -11,28 +11,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 
   <style>
-    /* ============ Matrix (الوضع الافتراضي) ============ */
+    /* ======== Themes ======== */
+    /* Matrix (default) */
     :root{
       --bg:#050805; --fg:#def7e5; --muted:#7dd08e;
-      --primary:#00ff88; --secondary:#00c06a; --primary-2:#11ffaa;
+      --primary:#00ff88; --primary-2:#11ffaa; --secondary:#00c06a;
       --card:#071107; --card-2:#0a150a;
       --love:#ff5c93; --danger:#ff4d4d;
       --chip:#07250f;
       --radius:18px; --shadow:0 28px 70px rgba(0,0,0,.55);
       --font:'Cairo',system-ui; --mono:'Share Tech Mono',monospace;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);
-      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;
-      font-size:clamp(14px,1.8vw,16px);
-    }
-
     /* Light */
     .light{
       --bg:#f5fff6; --fg:#08210f; --muted:#3a7b55;
-      --primary:#2563eb; --secondary:#0d47a1; --primary-2:#5ea5ff;
+      --primary:#2563eb; --primary-2:#5ea5ff; --secondary:#0d47a1;
       --card:#ffffff; --card-2:#f2fff7; --chip:#eef3ff;
       --love:#e91e63; --danger:#c62828;
       --shadow:0 18px 40px rgba(2,12,27,.08);
@@ -40,37 +33,54 @@
     /* Pink */
     .pink{
       --bg:#ffecf3; --fg:#3c0a1f; --muted:#8a3a5d;
-      --primary:#d81b60; --secondary:#880e4f; --primary-2:#ff8ad1;
+      --primary:#d81b60; --primary-2:#ff8ad1; --secondary:#880e4f;
       --card:#fff0f6; --card-2:#ffe3ef; --chip:#ffe6f0;
       --love:#ff2f7a; --danger:#c2185b;
       --shadow:0 18px 40px rgba(0,0,0,.1);
     }
 
-    /* خلفية مطر خفيف */
-    #mxRain{position:fixed;inset:0;z-index:-2;opacity:.16;pointer-events:none;filter:drop-shadow(0 0 6px var(--primary))}
-    .mx-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.08;
-      background:
-        repeating-linear-gradient(0deg, rgba(0,255,136,.18) 0 1px, transparent 1px 3px),
-        repeating-linear-gradient(90deg, rgba(0,255,136,.10) 0 1px, transparent 1px 26px);
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html,body{overflow-x:hidden}
+    body{
+      margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+      font-size:clamp(14px,1.8vw,16px);
+      -webkit-text-size-adjust:100%;
     }
+    /* منع سلوك تقريب iOS عند التركيز على الحقول */
+    input,select,textarea,button{font-size:16px}
+
+    /* Matrix rain (only in matrix) */
+    #mxRain{position:fixed;inset:0;z-index:-2;opacity:.16;pointer-events:none;filter:drop-shadow(0 0 6px var(--primary));display:block}
+    body.light #mxRain, body.pink #mxRain{display:none}
+    .mx-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.08;background:
+      repeating-linear-gradient(0deg, rgba(0,255,136,.18) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(0,255,136,.10) 0 1px, transparent 1px 26px);}
+    body.light .mx-overlay, body.pink .mx-overlay{display:none}
 
     /* Header */
     .header{position:fixed;inset-inline:0;top:0;z-index:60;
       background:linear-gradient(180deg, rgba(0,20,10,.9), rgba(0,0,0,.55));
-      border-bottom:1px solid rgba(0,255,136,.15); backdrop-filter:saturate(1.2) blur(8px); color:#fff;
-      display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;
-    }
+      border-bottom:1px solid rgba(0,255,136,.15); backdrop-filter:saturate(1.2) blur(8px);
+      color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;}
+    body.light .header{background:#fff;border-bottom:1px solid #e9eef5;box-shadow:0 8px 20px rgba(2,12,27,.06)}
+    body.pink .header{background:#fff0f6;border-bottom:1px solid #ffd5e6}
     #searchBar{flex:1;padding:10px 12px;border-radius:999px;border:1px solid rgba(0,255,136,.22);
       background:linear-gradient(180deg, rgba(0,255,136,.08), rgba(0,255,136,.03)); color:var(--fg); min-width:160px}
+    body.light #searchBar{background:#f7f9ff;border-color:#e1e7ff}
+    body.pink #searchBar{background:#fff7fb;border-color:#ffd5e6}
     .header-right{margin-inline-start:auto;display:flex;gap:8px}
     .install-btn{display:none;align-items:center;gap:6px;background:linear-gradient(90deg,var(--primary),var(--primary-2));
       color:#071407;border:none;border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:800}
 
-    /* Filters chips */
+    /* Chips */
     .filters{position:sticky;top:58px;z-index:55;padding:8px 0;margin:0 auto;max-width:1280px}
     .chips{display:flex;gap:8px;overflow:auto;padding:8px 10px}
     .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,255,136,.18);background:var(--chip);color:var(--fg);cursor:pointer;white-space:nowrap}
     .chip.active{background:rgba(0,255,136,.18);box-shadow:0 0 16px rgba(0,255,136,.25)}
+    body.light .chip{border-color:#e0e7ff;background:#f4f7ff} body.light .chip.active{background:#fff}
+    body.pink .chip{border-color:#ffd5e6;background:#fff0f6} body.pink .chip.active{background:#fff}
 
     /* Content grid */
     .content{padding:120px 10px 140px;margin:0 auto;width:100%;max-width:1280px}
@@ -78,76 +88,84 @@
     @media (min-width:900px){.content{padding:130px 20px 40px}#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
     @media (min-width:1400px){#postsContainer{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
 
-    /* Post card */
+    /* Card */
     .post{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;padding:14px;
-      box-shadow:var(--shadow),0 0 0 1px rgba(0,255,136,.15) inset;position:relative;overflow:hidden;transition:all .25s;opacity:0;transform:translateY(10px)}
+      box-shadow:var(--shadow),0 0 0 1px rgba(0,255,136,.15) inset;position:relative;overflow:hidden;
+      transition:all .25s;opacity:0;transform:translateY(10px)}
+    body.light .post{box-shadow:0 12px 30px rgba(2,12,27,.06);border:1px solid #eef2f8}
+    body.pink .post{box-shadow:0 12px 30px rgba(255,0,120,.09);border:1px solid #ffd5e6}
     .post.visible{opacity:1;transform:translateY(0)}
     .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-    .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;background:linear-gradient(90deg,var(--primary),var(--primary-2));box-shadow:0 0 18px rgba(0,255,136,.35)}
-    .post h4{margin:8px 0 6px;font-size:18px;letter-spacing:.3px}
+    .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;
+      background:linear-gradient(90deg,var(--primary),var(--primary-2))}
+    .post h4{margin:8px 0 6px;font-size:18px}
     .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75}
-    img{max-width:100%;border-radius:14px;display:block}
+    img{max-width:100%;border-radius:14px;display:block;cursor:zoom-in}
 
-    /* Simple Embed */
-    .embed{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:10px;box-shadow:0 0 0 1px rgba(0,255,136,.25) inset}
-    .embed-viewport{position:absolute;inset:0}
-    .embed-viewport iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;transition:opacity .2s}
+    /* Simple Embed (thumbnail only; playback in lightbox) */
+    .embed{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:10px;
+      box-shadow:0 0 0 1px rgba(0,255,136,.25) inset;cursor:pointer}
+    .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}
     .embed-overlay::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,.15))}
     .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;
       background:radial-gradient(circle at 30% 30%, #eafff4 0%, #cbffe8 60%, #b0ffd9 100%);box-shadow:0 10px 30px rgba(0,255,136,.35),0 0 30px rgba(0,255,136,.45)}
-    .embed-actions{position:absolute;inset:auto 10px 10px auto;display:flex;gap:6px;z-index:2}
-    .embed-mini{border:none;padding:6px 10px;border-radius:999px;background:rgba(0,255,136,.9);color:#071407;cursor:pointer;font-weight:800}
-    .embed-hide{opacity:0;pointer-events:none}
 
     /* Reactions / comments */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
     .react-btn{border:none;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:8px 10px;border-radius:12px;transition:.2s;font-weight:800}
-    .react-btn:hover{background:rgba(0,255,136,.08)}
+    .react-btn:hover{background:rgba(0,0,0,.06)}
+    body.light .react-btn:hover{background:#f3f6ff} body.pink .react-btn:hover{background:#ffe6f0}
     .react-btn[disabled]{opacity:.6;cursor:not-allowed}
     .react-love i{color:var(--love)} .react-dislike i{color:var(--danger)} .count{font-weight:800}
-    .comments-panel{background:rgba(0,255,136,.06);padding:10px;border-radius:14px;margin-top:12px;display:none;border:1px solid rgba(0,255,136,.15)}
-    .comment{padding:6px 0;border-bottom:1px dashed rgba(0,255,136,.18)}
-    .comment:last-child{border-bottom:none}
+    .comments-panel{background:rgba(0,0,0,.06);padding:10px;border-radius:14px;margin-top:12px;display:none;border:1px solid rgba(0,0,0,.08)}
+    body.light .comments-panel{background:#f7f9ff;border-color:#e9eef5}
+    body.pink .comments-panel{background:#fff0f6;border-color:#ffd5e6}
+    .comment{padding:6px 0;border-bottom:1px dashed rgba(0,0,0,.15)} .comment:last-child{border-bottom:none}
     .comment small{color:var(--muted);margin-inline-start:6px}
     .comments-toggle{border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:6px 8px;border-radius:8px}
-    .comments-toggle:hover{background:rgba(0,255,136,.08)}
+    .comments-toggle:hover{background:rgba(0,0,0,.06)} body.light .comments-toggle:hover{background:#f0f4ff} body.pink .comments-toggle:hover{background:#ffe6f0}
     .badge-num{display:inline-block;min-width:18px;padding:0 6px;height:18px;line-height:18px;font-size:12px;border-radius:10px;background:var(--primary);color:#071407;text-align:center;font-weight:800}
 
     /* Ads */
-    .ad-slider-wrapper{margin:4px 0;background:linear-gradient(180deg,var(--card),var(--card-2));padding:10px;border-radius:18px;box-shadow:var(--shadow);border:1px solid rgba(0,255,136,.18)}
+    .ad-slider-wrapper{margin:4px 0;background:linear-gradient(180deg,var(--card),var(--card-2));padding:10px;border-radius:18px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.12)}
+    body.light .ad-slider-wrapper{border-color:#e9eef5;box-shadow:0 12px 30px rgba(2,12,27,.06)}
+    body.pink .ad-slider-wrapper{border-color:#ffd5e6;box-shadow:0 12px 30px rgba(255,0,120,.09)}
     .ad-slider{display:flex;gap:15px;overflow-x:auto;padding-bottom:5px;scroll-behavior:smooth}
     .ad-slide{flex:0 0 140px;text-align:center}
     .ad-slide a{display:block;color:inherit}
-    .ad-circle{width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 6px;border:2px solid rgba(0,255,136,.35);box-shadow:0 10px 26px rgba(0,255,136,.25)}
+    .ad-circle{width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 6px;border:2px solid rgba(0,0,0,.12)}
     .ad-circle img{width:100%;height:100%;object-fit:cover}
     .ad-name{font-size:14px;margin-top:4px;color:var(--muted)}
-    .ad-note{background:#092010;padding:10px;text-align:center;color:#8be7a6;font-weight:800;margin-top:8px;border-radius:12px;border:1px solid rgba(0,255,136,.18)}
+    .ad-note{background:rgba(0,0,0,.06);padding:10px;text-align:center;color:var(--fg);font-weight:800;margin-top:8px;border-radius:12px;border:1px solid rgba(0,0,0,.08)}
     .full-span{grid-column:1/-1}
 
     /* Bottom nav */
-    .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:linear-gradient(0deg, rgba(0,20,10,.85), rgba(0,0,0,0));padding:10px 0;border-radius:25px 25px 0 0;border-top:1px solid rgba(0,255,136,.15);box-shadow:0 -4px 16px rgba(0,0,0,.3);z-index:50}
-    .nav-btn{text-align:center;color:#fff;font-size:12px;cursor:pointer;text-shadow:0 0 10px rgba(0,255,136,.4)} .nav-btn i{font-size:20px;display:block;margin-bottom:4px}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:linear-gradient(0deg, rgba(0,0,0,.08), rgba(0,0,0,0));padding:10px 0;border-radius:25px 25px 0 0;border-top:1px solid rgba(0,0,0,.08);box-shadow:0 -4px 16px rgba(0,0,0,.06);z-index:50}
+    .nav-btn{text-align:center;color:var(--fg);font-size:12px;cursor:pointer} .nav-btn i{font-size:20px;display:block;margin-bottom:4px}
 
     /* Modals + Toast */
     .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;padding:10px;overflow:auto}
-    .modal{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;width:min(520px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg);border:1px solid rgba(0,255,136,.18)}
+    .modal{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;width:min(520px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg);border:1px solid rgba(0,0,0,.12)}
     .close-btn{position:absolute;top:8px;inset-inline-end:10px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--fg)}
     .btn{padding:10px 15px;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;font-weight:800}
-    .input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(0,255,136,.22);margin-bottom:12px;background:rgba(10,30,15,.85);color:var(--fg);box-shadow:inset 0 0 16px rgba(0,255,136,.06)}
+    .input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);margin-bottom:12px;background:#fff;color:#111}
+    body:not(.light):not(.pink) .input, body:not(.light):not(.pink) select, body:not(.light):not(.pink) textarea{background:rgba(10,30,15,.85);color:var(--fg);border-color:rgba(0,255,136,.22)}
     .label{font-weight:800;margin-top:5px;display:block}
     .error{background:#2a0f12;color:#ffb0b0;padding:10px;border-radius:12px;margin-bottom:12px;border:1px solid #a33}
 
     .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:200;font-weight:900}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .skeleton{background:linear-gradient(90deg, rgba(0,255,136,.10), rgba(0,255,136,.16), rgba(0,255,136,.10));background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:18px}
-    .skeleton-card{height:280px}
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* Lightbox (للصور والفيديو) */
+    .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:120;align-items:center;justify-content:center;padding:12px}
+    .lightbox-content{max-width:min(1100px,96vw);max-height:90vh;position:relative}
+    .lightbox iframe, .lightbox img{width:100%;height:auto;max-height:90vh;display:block;border:0;border-radius:12px}
+    .lightbox-close{position:absolute;top:-44px;inset-inline-end:0;background:#000;border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
   </style>
 </head>
 <body>
 
-  <!-- خلفية ماتريكس -->
+  <!-- Matrix background (hidden in non-matrix) -->
   <canvas id="mxRain"></canvas>
   <div class="mx-overlay"></div>
 
@@ -240,12 +258,20 @@
     </div>
   </div>
 
+  <!-- Lightbox (صور/فيديو) -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="مشغل الوسائط">
+    <div class="lightbox-content">
+      <button class="lightbox-close" onclick="closeLightbox()">إغلاق ✖</button>
+      <div id="lightboxInner"></div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- واجهة + ثيم + PWA + Matrix rain + Embed -->
+  <!-- UI + Themes + PWA + Rain + Lightbox -->
   <script>
-    /* ===== Modals & Toast ===== */
+    /* Modals */
     function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";}
     function closeNewPost(){document.getElementById("newPostModal").style.display="none";document.body.style.overflow="";}
     function openSettings(){document.getElementById("settingsModal").style.display="flex";document.body.style.overflow="hidden";}
@@ -254,16 +280,15 @@
     function closeInfo(){document.getElementById('infoModal').style.display='none';document.body.style.overflow="";}
     window.showToast=(msg)=>{const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>t.classList.remove('show'),2200);};
 
-    /* ===== Theme (Matrix default) ===== */
+    /* Themes (matrix default) */
     const themeKey="kefo_theme";
     const names={matrix:"ماتريكس", light:"نهاري", pink:"بناتي"};
     function applyTheme(t){
-      document.body.classList.remove("light","pink"); // matrix = default (بدون كلاس)
+      document.body.classList.remove("light","pink");
       if(t==="light") document.body.classList.add("light");
       else if(t==="pink") document.body.classList.add("pink");
-      const meta=document.getElementById('theme-color');
       const color = t==='light' ? '#2563eb' : (t==='pink' ? '#d81b60' : '#00ff88');
-      meta?.setAttribute('content', color);
+      document.getElementById('theme-color')?.setAttribute('content', color);
       localStorage.setItem(themeKey,t);
       const label=document.getElementById('themeLabel'); if(label) label.textContent = "الوضع الحالي: " + (names[t]||names.matrix);
     }
@@ -275,17 +300,15 @@
     }
     applyTheme(localStorage.getItem(themeKey)||"matrix");
 
-    /* ===== Helpers ===== */
+    /* Helpers */
     document.addEventListener('contextmenu',e=>e.preventDefault());
     document.addEventListener('selectstart',e=>e.preventDefault());
     document.addEventListener('touchstart',function(e){window.longTouch=setTimeout(()=>e.preventDefault(),500);},{passive:false});
     document.addEventListener('touchend',()=>clearTimeout(window.longTouch));
-
-    // السماح برابط وسائط واحد
     const mediaInputs=Array.from(document.querySelectorAll('.media-input'));
     mediaInputs.forEach(inp=>inp.addEventListener('input',()=>{const f=mediaInputs.find(i=>i.value.trim());mediaInputs.forEach(i=>{i.closest('.input-row').style.display=(!f||i===f)?'':'none';});}));
 
-    /* ===== PWA ===== */
+    /* PWA */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(console.error); });
     }
@@ -294,49 +317,53 @@
     installBtn?.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); const c = await deferredPrompt.userChoice.catch(()=>null); deferredPrompt=null; installBtn.style.display='none'; showToast(c && c.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.'); });
     window.addEventListener('appinstalled',()=>{showToast('تم تثبيت التطبيق ✅');installBtn.style.display='none';});
 
-    /* ===== Matrix rain (خفيف) ===== */
+    /* Matrix rain (only in matrix) */
     const canvas=document.getElementById('mxRain'), ctx=canvas.getContext('2d');
     let w,h,font=16,cols,drops,raf;
     function rainResize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; cols=Math.floor(w/font); drops=new Array(cols).fill( Math.floor(Math.random()*h/font) ); }
-    function rainDraw(){ ctx.fillStyle='rgba(0,12,6,0.12)'; ctx.fillRect(0,0,w,h); ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--primary').trim()||'#00ff88'; ctx.font=font+'px "Share Tech Mono", monospace'; for(let i=0;i<drops.length;i++){ const char=Math.random()>0.5?'0':'1'; ctx.fillText(char, i*font, drops[i]*font); if(drops[i]*font > h && Math.random() > 0.965) drops[i]=0; drops[i]++; } raf=requestAnimationFrame(rainDraw); }
+    function rainDraw(){ if(document.body.classList.contains('light')||document.body.classList.contains('pink')) { cancelAnimationFrame(raf); return; }
+      ctx.fillStyle='rgba(0,12,6,0.12)'; ctx.fillRect(0,0,w,h);
+      ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--primary').trim()||'#00ff88';
+      ctx.font=font+'px "Share Tech Mono", monospace';
+      for(let i=0;i<drops.length;i++){ const char=Math.random()>0.5?'0':'1'; ctx.fillText(char, i*font, drops[i]*font); if(drops[i]*font > h && Math.random() > 0.965) drops[i]=0; drops[i]++; }
+      raf=requestAnimationFrame(rainDraw);
+    }
     window.addEventListener('resize',()=>{cancelAnimationFrame(raf);rainResize();rainDraw();});
     rainResize(); rainDraw();
 
-    /* ===== Simple Embed + auto stop ===== */
-    let embedObserver=null;
-    function stopEmbed(el){ if(!el) return; const vp=el.querySelector('.embed-viewport'); const overlay=el.querySelector('.embed-overlay'); if(vp) vp.innerHTML=""; if(overlay) overlay.classList.remove('embed-hide'); el.removeAttribute('data-playing'); }
-    function stopAllEmbeds(except){ document.querySelectorAll('.embed[data-playing="1"]').forEach(el=>{ if(except && el===except) return; stopEmbed(el); }); }
-    function buildEmbed(el){
-      stopAllEmbeds(el);
-      const vp=el.querySelector('.embed-viewport'); const overlay=el.querySelector('.embed-overlay'); const type=el.dataset.type;
-      try{
-        if(type==='yt'){
-          const id=el.dataset.id;
-          const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1`;
-          vp.innerHTML=`<iframe src="${src}" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
-        }else{
-          const url=el.dataset.url;
-          const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&allowfullscreen=true`;
-          vp.innerHTML=`<iframe src="${src}" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
-        }
-        overlay.classList.add('embed-hide'); el.setAttribute('data-playing','1');
-      }catch(e){ console.warn('embed error',e); }
+    /* Lightbox (صور وفيديو) */
+    const lb=document.getElementById('lightbox'); const lbInner=document.getElementById('lightboxInner');
+    function openLightbox(contentHtml){
+      lbInner.innerHTML=contentHtml;
+      lb.style.display='flex'; document.body.style.overflow='hidden';
     }
-    function initEmbeds(){
-      if(!embedObserver){
-        embedObserver=new IntersectionObserver(entries=>{
-          entries.forEach(ent=>{ const el=ent.target; if(!ent.isIntersecting && el.getAttribute('data-playing')==="1"){ stopEmbed(el); } });
-        },{threshold:0.1});
-      }
-      document.querySelectorAll('.embed:not([data-ready])').forEach(el=>{
-        el.setAttribute('data-ready','1');
-        const overlay=el.querySelector('.embed-overlay');
-        const big=el.querySelector('.embed-big');
-        overlay.addEventListener('click',()=>buildEmbed(el));
-        big.addEventListener('click',()=>buildEmbed(el));
-        embedObserver.observe(el);
-      });
+    function closeLightbox(){
+      lb.style.display='none'; document.body.style.overflow='';
+      lbInner.innerHTML=''; // تفريغ لإيقاف الفيديو
     }
+    window.closeLightbox=closeLightbox;
+
+    // لفتح فيديو يوتيوب
+    function openYouTube(id){
+      const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
+      openLightbox(`<iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`);
+    }
+    // لفتح فيديو فيسبوك
+    function openFacebook(url){
+      const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&allowfullscreen=true&autoplay=true`;
+      openLightbox(`<iframe src="${src}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>`);
+    }
+    // لفتح صورة
+    function openImage(src,alt){
+      openLightbox(`<img src="${src}" alt="${alt||''}">`);
+    }
+
+    // إغلاق بالضغط خارج المحتوى أو بالـEsc
+    lb.addEventListener('click',e=>{ if(e.target===lb) closeLightbox(); });
+    window.addEventListener('keydown',e=>{ if(e.key==='Escape' && lb.style.display==='flex') closeLightbox(); });
+
+    /* Utilities */
+    function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
   </script>
 
   <!-- Firebase + المحتوى -->
@@ -366,35 +393,33 @@
     function buildChips(){ chipsEl.innerHTML=''; filterTypes.forEach(t=>{const b=document.createElement('button'); b.className='chip'+(t.key===activeFilter?' active':''); b.textContent=t.label; b.onclick=()=>{activeFilter=t.key; buildChips(); updateVisibility();}; chipsEl.appendChild(b);}); }
     buildChips();
 
-    function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton skeleton-card'; postsContainer.appendChild(sk);} }
+    function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton'; sk.classList.add('skeleton-card'); postsContainer.appendChild(sk);} }
     showSkeletons();
 
-    function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
     function toYouTubeThumb(u){ const id=ytIdFrom(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
 
     function renderMedia(post){
       try{
-        if(post.imageURL) return `<img src="${post.imageURL}" alt="صورة" loading="lazy">`;
+        if(post.imageURL){
+          const safe=post.imageURL.replace(/"/g,'&quot;');
+          return `<img src="${safe}" alt="صورة" loading="lazy" onclick="openImage('${safe}','صورة')">`;
+        }
 
         if(post.youtubeURL){
           const id = ytIdFrom(post.youtubeURL);
           const thumb=toYouTubeThumb(post.youtubeURL);
-          return `<div class="embed" data-type="yt" data-id="${id}">
-            <div class="embed-viewport"></div>
+          return `<div class="embed" onclick="openYouTube('${id}')">
             <div class="embed-overlay" style="${thumb?`background-image:url('${thumb}')`:''}">
               <button class="embed-big">▶</button>
-              <div class="embed-actions"><a class="embed-mini" href="https://youtu.be/${id}" target="_blank" rel="noopener">↗ فتح</a></div>
             </div>
           </div>`;
         }
 
         if(post.facebookURL){
           const safe = encodeURI(post.facebookURL);
-          return `<div class="embed" data-type="fb" data-url="${safe}">
-            <div class="embed-viewport"></div>
+          return `<div class="embed" onclick="openFacebook('${safe}')">
             <div class="embed-overlay" style="background-image:linear-gradient(45deg,#3b5998,#8b9dc3)">
               <button class="embed-big">▶</button>
-              <div class="embed-actions"><a class="embed-mini" href="${safe}" target="_blank" rel="noopener">↗ فتح</a></div>
             </div>
           </div>`;
         }
@@ -456,7 +481,7 @@
           }
         });
 
-        initEmbeds();
+        // عدّاد التعليقات
         document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); });
         updateVisibility();
       }, err=>{
@@ -547,8 +572,6 @@
         if(navigator.share) navigator.share({ text }).catch(()=>{});
         else navigator.clipboard.writeText(text).then(()=>showToast("تم نسخ الرابط!")).catch(()=>{});
       };
-
-      new MutationObserver(()=>{ try{ initEmbeds(); }catch{} }).observe(postsContainer,{childList:true,subtree:true});
 
     } else {
       postsContainer.innerHTML=`<div class="error">غير متصل بقاعدة البيانات.</div>`;
