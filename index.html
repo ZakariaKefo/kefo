@@ -19,8 +19,8 @@
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);transition:var(--transition);min-height:100vh;font-size:clamp(14px,1.8vw,16px)}
-    .dark{--bg:#0f1218;--fg:#e5e5e5;--card-bg:#1f2430;--header-bg:#1f2a50;--primary:#4f8cff;--secondary:#223a7a;--muted:#999;--danger:#ef5350;--love:#ff5c93;--chip:#1f2a50}
-    .pink{--bg:#ffe6f0;--fg:#880e4f;--card-bg:#ffe6f0;--header-bg:#ad1457;--primary:#d81b60;--secondary:#880e4f;--muted:#aa6688;--danger:#c2185b;--love:#ff2f7a}
+    .dark{--bg:#0f1218;--fg:#e5e5e5;--card-bg:#1f2430;--header-bg:#1f2a50;--primary:#4f8cff;--secondary:#223a7a;--muted:#999}
+    .pink{--bg:#ffe6f0;--fg:#880e4f;--card-bg:#ffe6f0;--header-bg:#ad1457;--primary:#d81b60;--secondary:#880e4f;--muted:#aa6688}
     a{color:var(--primary);text-decoration:none}
 
     html, body { width: 100%; overflow-x: hidden; }
@@ -58,16 +58,16 @@
     .post h4{margin:0 0 6px;font-size:clamp(16px,2vw,18px)}
     .post p{margin:8px 0;white-space:pre-wrap;line-height:1.65}
 
-    /* Smart Embed */
-    .sem{position:relative;border-radius:12px;overflow:hidden;background:#000;margin-top:10px;aspect-ratio:16/9}
-    .sem-viewport{position:absolute;inset:0}
-    .sem-viewport iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .sem-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;transition:opacity .25s}
-    .sem-overlay::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.45), rgba(0,0,0,.15));}
-    .sem-big{position:relative;z-index:2;width:74px;height:74px;border-radius:50%;border:none;background:rgba(255,255,255,.9);cursor:pointer;font-size:28px;display:flex;align-items:center;justify-content:center}
-    .sem-hide{opacity:0;pointer-events:none}
-    .sem-actions{position:absolute;inset:auto 8px 8px auto;display:flex;gap:6px;z-index:2}
-    .sem-mini{border:none;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.85);cursor:pointer}
+    /* Simple Embed */
+    .embed{position:relative;border-radius:12px;overflow:hidden;background:#000;margin-top:10px;aspect-ratio:16/9}
+    .embed-viewport{position:absolute;inset:0}
+    .embed-viewport iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;transition:opacity .25s}
+    .embed-overlay::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.45), rgba(0,0,0,.15));}
+    .embed-big{position:relative;z-index:2;width:74px;height:74px;border-radius:50%;border:none;background:rgba(255,255,255,.9);cursor:pointer;font-size:28px;display:flex;align-items:center;justify-content:center}
+    .embed-hide{opacity:0;pointer-events:none}
+    .embed-actions{position:absolute;inset:auto 10px 10px auto;display:flex;gap:6px;z-index:2}
+    .embed-mini{border:none;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.9);cursor:pointer}
 
     /* Reactions */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
@@ -216,7 +216,7 @@
   <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- سكربت عام: واجهة + ثيم + PWA + SmartEmbed -->
+  <!-- واجهة + ثيم + PWA + Embed بسيط -->
   <script>
     /* === Modals & Toast === */
     function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";['imageURL','youtubeURL','facebookURL'].forEach(id=>document.getElementById(id).value="");document.querySelectorAll('.input-row').forEach(r=>r.style.display='');}
@@ -260,128 +260,47 @@
     installBtn?.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); const c = await deferredPrompt.userChoice.catch(()=>null); deferredPrompt=null; installBtn.style.display='none'; showToast(c && c.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.'); });
     window.addEventListener('appinstalled',()=>{showToast('تم تثبيت التطبيق ✅');installBtn.style.display='none';});
 
-    /* === SmartEmbed: YT/FB مع بدائل وواجهة أنيقة === */
-    (function(){
-      const SEM = {
-        items:new Map(), ytReady:false, fbReady:false, ytQueue:[], fbQueue:[],
-        ensureYT(){ if(window.YT && window.YT.Player){this.ytReady=true;this.ytQueue.splice(0).forEach(fn=>fn());return;}
-          if(this._yt) return; this._yt=true; const s=document.createElement('script'); s.src="https://www.youtube.com/iframe_api"; document.head.appendChild(s);
-          window.onYouTubeIframeAPIReady=()=>{this.ytReady=true;this.ytQueue.splice(0).forEach(fn=>fn());};
-        },
-        ensureFB(){ if(window.FB && window.FB.XFBML){this.fbReady=true;this.fbQueue.splice(0).forEach(fn=>fn());return;}
-          if(this._fb) return; this._fb=true; const root=document.createElement('div'); root.id='fb-root'; document.body.appendChild(root);
-          const s=document.createElement('script'); s.src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0"; s.async=true; s.defer=true; document.head.appendChild(s);
-          window.fbAsyncInit=()=>{ this.fbReady=true; this.fbQueue.splice(0).forEach(fn=>fn()); };
-        },
-
-        scan(){
-          document.querySelectorAll('.sem[data-ready!="1"]').forEach(el=>{
-            el.setAttribute('data-ready','1');
-            const id=el.dataset.id || ('sem-'+Math.random().toString(36).slice(2));
-            el.dataset.id=id;
-            const overlay=el.querySelector('.sem-overlay');
-            const big=el.querySelector('.sem-big');
-            const vp=el.querySelector('.sem-viewport');
-            const platform=el.dataset.platform;
-            const ytId=el.dataset.ytid;
-            const fbUrl=el.dataset.fburl;
-
-            const openExtern = ()=>{ const url = platform==='yt'
-              ? (ytId ? `https://youtu.be/${ytId}` : '#')
-              : (fbUrl || '#'); if(url!=='#') window.open(url, '_blank','noopener'); };
-
-            const mountYT_API = ()=>{
-              this.ensureYT();
-              const build=()=>{
-                try{
-                  const vpId=vp.id || (vp.id = id+'-vp');
-                  const p = new YT.Player(vpId, {
-                    videoId: ytId,
-                    playerVars: { rel:0, modestbranding:1, playsinline:1 },
-                    events:{
-                      onReady: ()=>{ overlay.classList.add('sem-hide'); p.playVideo(); },
-                      onError: ()=>fallbackYT()
-                    }
-                  });
-                }catch{ fallbackYT(); }
-              };
-              this.ytReady ? build() : this.ytQueue.push(build);
-            };
-
-            const fallbackYT = ()=>{
-              const src=`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
-              vp.innerHTML=`<iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
-              overlay.classList.add('sem-hide');
-              // لو حتى الـiframe مُنع
-              setTimeout(()=>{ if(!vp.querySelector('iframe')) overlay.classList.remove('sem-hide'); }, 1500);
-            };
-
-            const mountFB_API = ()=>{
-              this.ensureFB();
-              const build=()=>{
-                try{
-                  const inner=document.createElement('div');
-                  inner.className='fb-video';
-                  inner.setAttribute('data-href', fbUrl);
-                  inner.setAttribute('data-allowfullscreen','true');
-                  inner.setAttribute('data-show-text','false');
-                  vp.appendChild(inner);
-                  FB.XFBML.parse(vp, ()=>overlay.classList.add('sem-hide'));
-                }catch{ fallbackFB(); }
-              };
-              this.fbReady ? build() : this.fbQueue.push(build);
-            };
-
-            const fallbackFB = ()=>{
-              const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(fbUrl)}&show_text=false&autoplay=true&allowfullscreen=true`;
-              try{
-                vp.innerHTML=`<iframe src="${src}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="no-referrer"></iframe>`;
-                overlay.classList.add('sem-hide');
-              }catch{
-                // آخر حل
-                vp.innerHTML = `<button class="sem-mini" onclick="window.open('${fbUrl}','_blank','noopener')">فتح على Facebook</button>`;
-              }
-            };
-
-            function onPlay(){
-              if(platform==='yt' && ytId){
-                let switched=false;
-                // جرّب API بسرعة، وإن تعطلت نبدّل خلال 700ms
-                const t=setTimeout(()=>{ if(!switched){ switched=true; fallbackYT(); } },700);
-                try{ mountYT_API(); }catch{ clearTimeout(t); fallbackYT(); }
-              }else if(platform==='fb' && fbUrl){
-                let switched=false;
-                const t=setTimeout(()=>{ if(!switched){ switched=true; fallbackFB(); } },700);
-                try{ mountFB_API(); }catch{ clearTimeout(t); fallbackFB(); }
-              }
-            }
-
-            overlay.addEventListener('click', onPlay);
-            big.addEventListener('click', onPlay);
-
-            // زر فتح خارجي احتياطي
-            const actions=el.querySelector('.sem-actions');
-            const openBtn=document.createElement('button');
-            openBtn.textContent='↗ فتح';
-            openBtn.className='sem-mini';
-            openBtn.addEventListener('click', openExtern);
-            actions.appendChild(openBtn);
-          });
+    /* === Simple Embed (الأبسط) === */
+    function ytIdFrom(url){
+      try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}
+    }
+    function buildEmbed(el){
+      const vp=el.querySelector('.embed-viewport');
+      const overlay=el.querySelector('.embed-overlay');
+      const type=el.dataset.type;
+      try{
+        if(type==='yt'){
+          const id=el.dataset.id;
+          const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1`;
+          vp.innerHTML=`<iframe src="${src}" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+        }else{
+          const url=el.dataset.url;
+          const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&allowfullscreen=true`;
+          vp.innerHTML=`<iframe src="${src}" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
         }
-      };
-
-      window.SEM = SEM;
-      document.addEventListener('DOMContentLoaded', ()=> SEM.scan());
-    })();
+        overlay.classList.add('embed-hide');
+      }catch(e){
+        console.warn('embed error',e);
+      }
+    }
+    function initEmbeds(){
+      document.querySelectorAll('.embed:not([data-ready])').forEach(el=>{
+        el.setAttribute('data-ready','1');
+        const overlay=el.querySelector('.embed-overlay');
+        const big=el.querySelector('.embed-big');
+        overlay.addEventListener('click',()=>buildEmbed(el));
+        big.addEventListener('click',()=>buildEmbed(el));
+      });
+    }
   </script>
 
-  <!-- سكربت الموديول: Firebase + البوستات -->
+  <!-- Firebase + البوستات -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, getCountFromServer, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyA15okly94Qb9XXSMdVdhGg5D4lMqLW1Iw",
+      apiKey: "AIzaSyA15okly94Qb9XXSMدVdhGg5D4lMqLW1Iw",
       authDomain: "kefo-posts.firebaseapp.com",
       projectId: "kefo-posts",
       storageBucket: "kefo-posts.appspot.com",
@@ -405,40 +324,37 @@
     function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton skeleton-card'; postsContainer.appendChild(sk);} }
     showSkeletons();
 
-    function toYouTubeId(u){try{const url=new URL(u);let v=url.searchParams.get('v');if(!v){const p=url.pathname.split('/'); v=p.pop()||p.pop();}return v||null;}catch{return null;}}
-    function toYouTubeThumb(u){ const id=toYouTubeId(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
+    function toYouTubeThumb(u){ const id=ytIdFrom(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
 
     function renderMedia(post){
       try{
         if(post.imageURL) return `<img src="${post.imageURL}" alt="صورة" loading="lazy">`;
 
         if(post.youtubeURL){
-          const id=toYouTubeId(post.youtubeURL);
+          const id = ( ()=>{ try{ const u=new URL(post.youtubeURL); let v=u.searchParams.get('v'); if(!v){const p=u.pathname.split('/'); v=p.pop()||p.pop();} return v||null; }catch{return null;} } )();
           const thumb=toYouTubeThumb(post.youtubeURL);
-          return `<div class="sem" data-platform="yt" data-ytid="${id}">
-            <div class="sem-viewport" id="vp-${post.id}"></div>
-            <div class="sem-overlay" style="${thumb?`background-image:url('${thumb}')`:''}">
-              <button class="sem-big">▶</button>
-              <div class="sem-actions"></div>
+          return `<div class="embed" data-type="yt" data-id="${id}">
+            <div class="embed-viewport"></div>
+            <div class="embed-overlay" style="${thumb?`background-image:url('${thumb}')`:''}">
+              <button class="embed-big">▶</button>
+              <div class="embed-actions"><a class="embed-mini" href="https://youtu.be/${id}" target="_blank" rel="noopener">↗ فتح</a></div>
             </div>
           </div>`;
         }
 
         if(post.facebookURL){
-          return `<div class="sem" data-platform="fb" data-fburl="${encodeURI(post.facebookURL)}">
-            <div class="sem-viewport" id="vp-${post.id}"></div>
-            <div class="sem-overlay" style="background-image:linear-gradient(45deg,#3b5998,#8b9dc3)">
-              <button class="sem-big">▶</button>
-              <div class="sem-actions"></div>
+          const safe = encodeURI(post.facebookURL);
+          return `<div class="embed" data-type="fb" data-url="${safe}">
+            <div class="embed-viewport"></div>
+            <div class="embed-overlay" style="background-image:linear-gradient(45deg,#3b5998,#8b9dc3)">
+              <button class="embed-big">▶</button>
+              <div class="embed-actions"><a class="embed-mini" href="${safe}" target="_blank" rel="noopener">↗ فتح</a></div>
             </div>
           </div>`;
         }
 
         return '';
-      }catch(e){
-        console.error('renderMedia error', e);
-        return '';
-      }
+      }catch(e){ console.error('renderMedia error', e); return ''; }
     }
 
     const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
@@ -483,8 +399,18 @@
             </div>`;
           postsContainer.appendChild(card);
 
-          try { window.SEM.scan(); } catch(e){ console.warn('SEM scan error', e); }
+          observePosts();
+        });
 
+        // فعّل مسح الـembed
+        initEmbeds();
+
+        // عدّاد التعليقات
+        document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); });
+        updateVisibility();
+
+        // بعد كل 5 منشورات إعلان
+        posts.forEach((post,i)=>{
           if((i+1)%5===0){
             const wrapper=document.createElement('div'); wrapper.className='ad-slider-wrapper full-span';
             const slider=document.createElement('div'); slider.className='ad-slider';
@@ -493,13 +419,10 @@
               slider.appendChild(slide);
             });
             const note=document.createElement('div'); note.className='ad-note'; note.innerHTML=`لإضافة إعلانك الخاص <a href="https://wa.me/123456789" target="_blank" rel="noopener">اضغط هنا</a>`;
-            wrapper.appendChild(slider); wrapper.appendChild(note); postsContainer.appendChild(wrapper);
+            postsContainer.appendChild(wrapper); wrapper.appendChild(slider); wrapper.appendChild(note);
           }
         });
 
-        document.querySelectorAll('.post').forEach(p=>observer.observe(p));
-        document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); });
-        updateVisibility();
       }, err=>{
         console.error("load posts error",err);
         postsContainer.innerHTML=`<div class="error">فشل جلب المنشورات. حاول لاحقًا.</div>`;
@@ -546,7 +469,6 @@
         catch(e){ console.error("vote error",e); window.showToast?.("تعذّر تسجيل التصويت، حاول لاحقًا."); }
       };
 
-      /* نشر منشور */
       window.submitPost = async function(){
         const type = document.getElementById("postType").value;
         const content = document.getElementById("postContent").value.trim();
@@ -590,8 +512,7 @@
         else navigator.clipboard.writeText(text).then(()=>showToast("تم نسخ الرابط!")).catch(()=>{});
       };
 
-      // مسح تلقائي لأي عناصر جديدة
-      new MutationObserver(()=>{ try{ window.SEM.scan(); }catch{} }).observe(postsContainer,{childList:true,subtree:true});
+      new MutationObserver(()=>{ try{ initEmbeds(); }catch{} }).observe(postsContainer,{childList:true,subtree:true});
     } else {
       postsContainer.innerHTML=`<div class="error">غير متصل بقاعدة البيانات.</div>`;
     }
