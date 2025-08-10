@@ -62,7 +62,7 @@
     .embed{position:relative;border-radius:12px;overflow:hidden;background:#000;margin-top:10px;aspect-ratio:16/9}
     .embed-viewport{position:absolute;inset:0}
     .embed-viewport iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;transition:opacity .25s}
+    .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;transition:opacity .2s}
     .embed-overlay::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.45), rgba(0,0,0,.15));}
     .embed-big{position:relative;z-index:2;width:74px;height:74px;border-radius:50%;border:none;background:rgba(255,255,255,.9);cursor:pointer;font-size:28px;display:flex;align-items:center;justify-content:center}
     .embed-hide{opacity:0;pointer-events:none}
@@ -216,7 +216,7 @@
   <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- واجهة + ثيم + PWA + Embed بسيط -->
+  <!-- واجهة + ثيم + PWA + Embed بسيط مع إيقاف تلقائي -->
   <script>
     /* === Modals & Toast === */
     function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";['imageURL','youtubeURL','facebookURL'].forEach(id=>document.getElementById(id).value="");document.querySelectorAll('.input-row').forEach(r=>r.style.display='');}
@@ -260,11 +260,25 @@
     installBtn?.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); const c = await deferredPrompt.userChoice.catch(()=>null); deferredPrompt=null; installBtn.style.display='none'; showToast(c && c.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.'); });
     window.addEventListener('appinstalled',()=>{showToast('تم تثبيت التطبيق ✅');installBtn.style.display='none';});
 
-    /* === Simple Embed (الأبسط) === */
-    function ytIdFrom(url){
-      try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}
+    /* === Simple Embed مع إيقاف تلقائي === */
+    let embedObserver=null;
+    function stopEmbed(el){
+      if(!el) return;
+      const vp=el.querySelector('.embed-viewport');
+      const overlay=el.querySelector('.embed-overlay');
+      if(vp) vp.innerHTML="";
+      if(overlay) overlay.classList.remove('embed-hide');
+      el.removeAttribute('data-playing');
+    }
+    function stopAllEmbeds(except){
+      document.querySelectorAll('.embed[data-playing="1"]').forEach(el=>{
+        if(except && el===except) return;
+        stopEmbed(el);
+      });
     }
     function buildEmbed(el){
+      // أوقف أي فيديو آخر
+      stopAllEmbeds(el);
       const vp=el.querySelector('.embed-viewport');
       const overlay=el.querySelector('.embed-overlay');
       const type=el.dataset.type;
@@ -279,17 +293,28 @@
           vp.innerHTML=`<iframe src="${src}" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
         }
         overlay.classList.add('embed-hide');
-      }catch(e){
-        console.warn('embed error',e);
-      }
+        el.setAttribute('data-playing','1');
+      }catch(e){ console.warn('embed error',e); }
     }
     function initEmbeds(){
+      if(!embedObserver){
+        embedObserver=new IntersectionObserver(entries=>{
+          entries.forEach(ent=>{
+            const el=ent.target;
+            // إذا خرج الفيديو من الشاشة أوقفه تلقائيًا
+            if(!ent.isIntersecting && el.getAttribute('data-playing')==="1"){
+              stopEmbed(el);
+            }
+          });
+        },{threshold:0.1});
+      }
       document.querySelectorAll('.embed:not([data-ready])').forEach(el=>{
         el.setAttribute('data-ready','1');
         const overlay=el.querySelector('.embed-overlay');
         const big=el.querySelector('.embed-big');
         overlay.addEventListener('click',()=>buildEmbed(el));
         big.addEventListener('click',()=>buildEmbed(el));
+        embedObserver.observe(el);
       });
     }
   </script>
@@ -300,7 +325,7 @@
     import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, getCountFromServer, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyA15okly94Qb9XXSMدVdhGg5D4lMqLW1Iw",
+      apiKey: "AIzaSyA15okly94Qb9XXSMdVdhGg5D4lMqLW1Iw",
       authDomain: "kefo-posts.firebaseapp.com",
       projectId: "kefo-posts",
       storageBucket: "kefo-posts.appspot.com",
@@ -324,6 +349,7 @@
     function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton skeleton-card'; postsContainer.appendChild(sk);} }
     showSkeletons();
 
+    function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
     function toYouTubeThumb(u){ const id=ytIdFrom(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
 
     function renderMedia(post){
@@ -331,7 +357,7 @@
         if(post.imageURL) return `<img src="${post.imageURL}" alt="صورة" loading="lazy">`;
 
         if(post.youtubeURL){
-          const id = ( ()=>{ try{ const u=new URL(post.youtubeURL); let v=u.searchParams.get('v'); if(!v){const p=u.pathname.split('/'); v=p.pop()||p.pop();} return v||null; }catch{return null;} } )();
+          const id = ytIdFrom(post.youtubeURL);
           const thumb=toYouTubeThumb(post.youtubeURL);
           return `<div class="embed" data-type="yt" data-id="${id}">
             <div class="embed-viewport"></div>
@@ -358,11 +384,10 @@
     }
 
     const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
-    function observePosts(){ document.querySelectorAll(".post").forEach(p=>observer.observe(p)); }
 
+    function updateVisibility(){ const posts=document.querySelectorAll(".post"); posts.forEach(p=>{const matchesType=(activeFilter==='الكل')||(p.dataset.type===activeFilter); const matchesText=!searchText||p.innerText.toLowerCase().includes(searchText); p.style.display=(matchesType&&matchesText)?'':'none';}); }
     let searchTimeout;
     document.getElementById("searchBar").addEventListener("input", function(){ clearTimeout(searchTimeout); searchText=this.value.toLowerCase(); searchTimeout=setTimeout(updateVisibility,250); });
-    function updateVisibility(){ const posts=document.querySelectorAll(".post"); posts.forEach(p=>{const matchesType=(activeFilter==='الكل')||(p.dataset.type===activeFilter); const matchesText=!searchText||p.innerText.toLowerCase().includes(searchText); p.style.display=(matchesType&&matchesText)?'':'none';}); }
 
     const adsPool=[{name:"إعلان 1",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/1"},{name:"إعلان 2",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/2"},{name:"إعلان 3",image:"https://via.placeholder.com/120",link:"https://example.com/3"},{name:"إعلان 4",image:"https://via.placeholder.com/120",link:"https://example.com/4"},{name:"إعلان 5",image:"https://via.placeholder.com/120",link:"https://example.com/5"},{name:"إعلان 6",image:"https://via.placeholder.com/120",link:"https://example.com/6"}];
     function getRandomAds(){const copy=[...adsPool];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy.slice(0,4);}
@@ -399,18 +424,9 @@
             </div>`;
           postsContainer.appendChild(card);
 
-          observePosts();
-        });
+          observer.observe(card);
 
-        // فعّل مسح الـembed
-        initEmbeds();
-
-        // عدّاد التعليقات
-        document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); });
-        updateVisibility();
-
-        // بعد كل 5 منشورات إعلان
-        posts.forEach((post,i)=>{
+          /* أدرج إعلان بعد كل 5 منشورات مباشرة */
           if((i+1)%5===0){
             const wrapper=document.createElement('div'); wrapper.className='ad-slider-wrapper full-span';
             const slider=document.createElement('div'); slider.className='ad-slider';
@@ -419,10 +435,17 @@
               slider.appendChild(slide);
             });
             const note=document.createElement('div'); note.className='ad-note'; note.innerHTML=`لإضافة إعلانك الخاص <a href="https://wa.me/123456789" target="_blank" rel="noopener">اضغط هنا</a>`;
-            postsContainer.appendChild(wrapper); wrapper.appendChild(slider); wrapper.appendChild(note);
+            wrapper.appendChild(slider); wrapper.appendChild(note);
+            postsContainer.appendChild(wrapper);
           }
         });
 
+        // فعّل الـEmbeds مع المراقبة (إيقاف تلقائي)
+        initEmbeds();
+
+        // عدّاد التعليقات
+        document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); });
+        updateVisibility();
       }, err=>{
         console.error("load posts error",err);
         postsContainer.innerHTML=`<div class="error">فشل جلب المنشورات. حاول لاحقًا.</div>`;
@@ -512,7 +535,9 @@
         else navigator.clipboard.writeText(text).then(()=>showToast("تم نسخ الرابط!")).catch(()=>{});
       };
 
+      // أي عناصر جديدة: فعّل مراقبة الفيديو
       new MutationObserver(()=>{ try{ initEmbeds(); }catch{} }).observe(postsContainer,{childList:true,subtree:true});
+
     } else {
       postsContainer.innerHTML=`<div class="error">غير متصل بقاعدة البيانات.</div>`;
     }
