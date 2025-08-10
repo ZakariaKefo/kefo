@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <!-- إلغاء الزوم + ضبط العرض للموبايل -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#00ff88" id="theme-color" />
   <title>منصة الخدمات - KeFo Posts</title>
 
@@ -37,14 +38,18 @@
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{height:100%; width:100%}
     html,body{overflow-x:hidden}
     body{
       margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);
       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
       font-size:clamp(14px,1.8vw,16px); -webkit-text-size-adjust:100%;
+      touch-action: pan-x pan-y; /* يمنع حركات تكبير غريبة */
     }
-    input,select,textarea,button{font-size:16px} /* يمنع تكبير Safari */
+    /* منع تكبير النص عند التركيز في iOS */
+    input,select,textarea,button{font-size:16px}
+    /* تقليل أي تجاوز عرض */
+    img, iframe, video{max-width:100%; height:auto}
 
     /* Matrix rain (يظهر فقط في الماتريكس) */
     #mxRain{position:fixed;inset:0;z-index:-2;opacity:.16;pointer-events:none;filter:drop-shadow(0 0 6px var(--primary));display:block}
@@ -55,10 +60,10 @@
     body.light .mx-overlay, body.pink .mx-overlay{display:none}
 
     /* Header */
-    .header{position:fixed;inset-inline:0;top:0;z-index:60;
+    .header{position:fixed;inset-inline:0;top:0;z-index:60;max-width:100vw;
       background:linear-gradient(180deg, rgba(0,20,10,.9), rgba(0,0,0,.55));
       border-bottom:1px solid rgba(0,255,136,.15); backdrop-filter:saturate(1.2) blur(8px);
-      color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;max-width:100vw}
+      color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px}
     body.light .header{background:#fff;border-bottom:1px solid #e9eef5;box-shadow:0 8px 20px rgba(2,12,27,.06)}
     body.pink .header{background:#fff0f6;border-bottom:1px solid #ffd5e6}
     #searchBar{flex:1;padding:10px 12px;border-radius:999px;border:1px solid rgba(0,255,136,.22);
@@ -68,8 +73,6 @@
     .header-right{margin-inline-start:auto;display:flex;gap:8px}
     .install-btn{display:none;align-items:center;gap:6px;background:linear-gradient(90deg,var(--primary),var(--primary-2));
       color:#071407;border:none;border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:800}
-
-    /* Filters */
     .filters{position:sticky;top:58px;z-index:55;padding:8px 0;margin:0 auto;max-width:1280px}
     .chips{display:flex;gap:8px;overflow:auto;padding:8px 10px}
     .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,255,136,.18);background:var(--chip);color:var(--fg);cursor:pointer;white-space:nowrap}
@@ -83,17 +86,17 @@
     @media (min-width:900px){.content{padding:130px 20px 40px}#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
     @media (min-width:1400px){#postsContainer{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
 
-    /* Card (حرصًا على الموبايل: لا يتجاوز العرض) */
+    /* Card */
     .post{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;padding:14px;
       box-shadow:var(--shadow),0 0 0 1px rgba(0,255,136,.15) inset;position:relative;overflow:hidden;
-      transition:all .25s;opacity:0;transform:translateY(10px);max-width:100%}
+      transition:all .25s;opacity:0;transform:translateY(10px);max-width:100%; width:100%}
     body.light .post{box-shadow:0 12px 30px rgba(2,12,27,.06);border:1px solid #eef2f8}
     body.pink .post{box-shadow:0 12px 30px rgba(255,0,120,.09);border:1px solid #ffd5e6}
     .post.visible{opacity:1;transform:translateY(0)}
     .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;max-width:100%}
     .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;
       background:linear-gradient(90deg,var(--primary),var(--primary-2))}
-    .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere}
+    .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere;word-break:break-word}
     .post img, .post iframe, .post video{max-width:100%;height:auto;border-radius:14px;display:block}
 
     /* Embed (thumbnail فقط – التشغيل في Lightbox) */
@@ -101,12 +104,12 @@
       box-shadow:0 0 0 1px rgba(0,255,136,.25) inset;cursor:pointer;max-width:100%}
     .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}
     .embed-overlay::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,.15))}
-    .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;
+    .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;touch-action:manipulation;
       background:radial-gradient(circle at 30% 30%, #eafff4 0%, #cbffe8 60%, #b0ffd9 100%);box-shadow:0 10px 30px rgba(0,255,136,.35),0 0 30px rgba(0,255,136,.45)}
 
     /* Reactions / comments */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
-    .react-btn{border:none;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:8px 10px;border-radius:12px;transition:.2s;font-weight:800}
+    .react-btn{border:none;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:8px 10px;border-radius:12px;transition:.2s;font-weight:800;touch-action:manipulation}
     .react-btn:hover{background:rgba(0,0,0,.06)}
     body.light .react-btn:hover{background:#f3f6ff} body.pink .react-btn:hover{background:#ffe6f0}
     .react-btn[disabled]{opacity:.6;cursor:not-allowed}
@@ -141,11 +144,11 @@
     .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;padding:10px;overflow:auto}
     .modal{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;width:min(520px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg);border:1px solid rgba(0,0,0,.12);max-width:100%}
     .close-btn{position:absolute;top:8px;inset-inline-end:10px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--fg)}
-    .btn{padding:10px 15px;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;font-weight:800}
+    .btn{padding:10px 15px;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;font-weight:800;touch-action:manipulation}
     .input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);margin-bottom:12px;background:#fff;color:#111}
     body:not(.light):not(.pink) .input, body:not(.light):not(.pink) select, body:not(.light):not(.pink) textarea{background:rgba(10,30,15,.85);color:var(--fg);border-color:rgba(0,255,136,.22)}
     .label{font-weight:800;margin-top:5px;display:block}
-    .error{background:#2a0f12;color:#ffb0b0;padding:10px;border-radius:12px;margin-bottom:12px;border:1px solid #a33}
+    .error{background:#2a0f12;color:#ffb0ب0;padding:10px;border-radius:12px;margin-bottom:12px;border:1px solid #a33}
 
     .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:200;font-weight:900}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -153,8 +156,10 @@
     /* Lightbox (صور/فيديو) */
     .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:120;align-items:center;justify-content:center;padding:12px}
     .lightbox-content{max-width:min(1100px,96vw);max-height:90vh;position:relative}
+    /* لليوتيوب: 16:9 ثابت */
     .lb-media{width:min(96vw,1100px);max-height:90vh;aspect-ratio:16/9}
     .lb-media iframe{width:100%;height:100%;display:block;border:0;border-radius:12px}
+    /* للصور */
     .lightbox img{width:auto;max-width:96vw;max-height:90vh;height:auto;display:block;border:0;border-radius:12px}
     .lightbox-close{position:absolute;top:-44px;inset-inline-end:0;background:#000;border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
   </style>
@@ -299,6 +304,11 @@
     /* منع أي تمدد أفقي غير مقصود */
     window.addEventListener('load',()=>{document.querySelectorAll('img,iframe,video').forEach(el=>{el.style.maxWidth='100%';});});
 
+    /* إلغاء تكبير/تصغير بالإيماءات قدر الإمكان */
+    ['gesturestart','gesturechange','gestureend'].forEach(evt=>{
+      window.addEventListener(evt, e=>e.preventDefault(), {passive:false});
+    });
+
     /* Helpers */
     document.addEventListener('contextmenu',e=>e.preventDefault());
     document.addEventListener('selectstart',e=>e.preventDefault());
@@ -349,12 +359,29 @@
       const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
       openLightbox(`<div class="lb-media"><iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`);
     }
-    // فتح Facebook في Lightbox مع حساب أبعاد صحيحة
+    // فتح Facebook في Lightbox مع زر التقريب/التكبير (Full Screen) بدون قص
     function openFacebook(url){
-      const w=Math.floor(Math.min(window.innerWidth*0.96,1100));
-      const h=Math.floor(w*9/16); // 16:9
+      const maxW = Math.min(window.innerWidth*0.96, 1100);
+      const maxH = window.innerHeight*0.90;
+      // احسب ارتفاع 16:9، ولو فيه أشرطة تحكم نضيف هامش بسيط
+      let h = Math.floor(maxW * 9 / 16 + 64);
+      if (h > maxH) { // لو تجاوز ارتفاع الشاشة، قلل العرض وكرر الحساب
+        h = Math.floor(maxH);
+      }
+      const w = Math.floor(Math.min(maxW, h * 16 / 9)); // حافظ على 16:9 قدر الإمكان
       const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&allowfullscreen=true&autoplay=true&width=${w}&height=${h}`;
-      openLightbox(`<div class="lb-media"><iframe src="${src}" style="border:none;overflow:hidden" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe></div>`);
+      openLightbox(`
+        <div style="width:${w}px; max-width:96vw;">
+          <iframe
+            src="${src}"
+            style="border:none;overflow:hidden; width:100%; height:${h}px"
+            scrolling="no"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; web-share"
+            allowfullscreen="true"
+            referrerpolicy="no-referrer">
+          </iframe>
+        </div>
+      `);
     }
     // فتح صورة
     function openImage(src,alt){
@@ -393,7 +420,7 @@
     function buildChips(){ chipsEl.innerHTML=''; filterTypes.forEach(t=>{const b=document.createElement('button'); b.className='chip'+(t.key===activeFilter?' active':''); b.textContent=t.label; b.onclick=()=>{activeFilter=t.key; buildChips(); updateVisibility();}; chipsEl.appendChild(b);}); }
     buildChips();
 
-    function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton'; sk.classList.add('skeleton-card'); postsContainer.appendChild(sk);} }
+    function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton skeleton-card'; postsContainer.appendChild(sk);} }
     showSkeletons();
 
     function toYouTubeThumb(u){ const id=ytIdFrom(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
@@ -446,6 +473,7 @@
           const loves=post.loves||0, dislikes=post.dislikes||0;
           const card=document.createElement('div'); card.className='post'; card.dataset.type=post.type||''; card.dataset.postId=post.id;
 
+          /* حذف التكرار: نبقي فقط البادج + المحتوى */
           card.innerHTML=`
             <div class="post-header"><span class="badge">⟐ ${post.type||'منوّع'}</span></div>
             <p>${post.content||''}</p>
