@@ -1,4 +1,4 @@
-const CACHE = "kefo-static-v9";
+const CACHE = "kefo-static-v10";
 const ASSET_PATHS = [
   ".", "index.html", "manifest.webmanifest",
   "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png"
