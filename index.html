@@ -145,7 +145,7 @@
     .lightbox img{width:auto;max-width:96vw;max-height:90vh;height:auto;display:block;border:0;border-radius:12px}
     .lightbox-close{position:absolute;top:-44px;inset-inline-end:0;background:#000;border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
 
-    /* وضع ملء الشاشة الحقيقي */
+    /* ملء الشاشة */
     .lightbox:fullscreen,
     .lightbox:-webkit-full-screen{background:#000}
     .lightbox:fullscreen .lightbox-content,
@@ -218,9 +218,9 @@
         <input id="youtubeURL" type="url" class="input media-input" placeholder="https://www.youtube.com/watch?v=... أو youtu.be/...">
       </div>
 
-      <label class="label">رابط Facebook (فيديو) (اختياري، يُلغِي باقي الروابط)</label>
+      <label class="label">رابط Facebook (فيديو/ريلز) (اختياري، يُلغِي باقي الروابط)</label>
       <div class="input-row">
-        <input id="facebookURL" type="url" class="input media-input" placeholder="https://www.facebook.com/.../videos/... أو watch/?v=...">
+        <input id="facebookURL" type="url" class="input media-input" placeholder="https://www.facebook.com/reel/... أو .../videos/...">
       </div>
 
       <button class="btn" onclick="submitPost()">نشر</button>
@@ -326,7 +326,7 @@
     window.addEventListener('resize',()=>{cancelAnimationFrame(raf);rainResize();rainDraw();});
     rainResize(); rainDraw();
 
-    /* ====== Lightbox (صور/فيديو) + ملء الشاشة التلقائي ====== */
+    /* ====== Lightbox (صور/فيديو) + ملء الشاشة ====== */
     const lb=document.getElementById('lightbox'); const lbInner=document.getElementById('lightboxInner');
 
     function openLightbox(contentHtml){
@@ -342,37 +342,51 @@
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
       }
+      window.removeEventListener('resize', adjustFbReelInFullscreen);
+      document.removeEventListener('fullscreenchange', onFsChange);
+      document.removeEventListener('webkitfullscreenchange', onFsChange);
     }
     window.closeLightbox=closeLightbox;
 
-    // محاولة الدخول لملء الشاشة مباشرة بعد فتح اللايت بوكس (ضمن إيماءة المستخدم)
-    async function tryAutoFullscreen(){
+    // طلب ملء الشاشة + قفل الاتجاه (حسب النوع)
+    async function tryAutoFullscreen(orientation /* 'portrait' | 'landscape' */){
       const el = lb;
       const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
       try {
         if (req) { await req.call(el); }
-        // قفل الاتجاه أفقي أثناء الفيديو لتحكمات أوضح (قد تفشل في بعض المتصفحات، لا مشكلة)
-        if (screen.orientation && screen.orientation.lock) {
-          try { await screen.orientation.lock('landscape'); } catch(_) {}
+        if (screen.orientation && screen.orientation.lock && orientation) {
+          try { await screen.orientation.lock(orientation); } catch(_) {}
         }
       } catch(err){ console.warn('Fullscreen not allowed:', err); }
     }
 
     function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
+    function isFacebookReel(urlStr){
+      try{
+        const u = new URL(urlStr);
+        const p = u.pathname.toLowerCase();
+        return p.includes('/reel/') || p.includes('/reels/') || u.searchParams.has('reel_id');
+      }catch{ return false; }
+    }
 
-    // يوتيوب (16:9 + تحكمات + ملء الشاشة تلقائي)
+    // يوتيوب (16:9 + ملء الشاشة Landscape)
     function openYouTube(id){
       const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
       openLightbox(`<div class="lb-media"><iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`);
-      // جرّب ملء الشاشة فورًا
-      setTimeout(tryAutoFullscreen, 0);
+      setTimeout(()=>tryAutoFullscreen('landscape'), 0);
     }
 
-    // فيسبوك: حساب أبعاد + إظهار زر Fullscreen + ملء الشاشة تلقائي
+    // فيسبوك: تفرقة بين ريلز (9:16) والفيديو العادي (16:9)
     function openFacebook(url){
+      if (isFacebookReel(url)) openFacebookReel(url);
+      else openFacebookVideo(url);
+    }
+
+    // فيديو فيسبوك عادي (16:9)
+    function openFacebookVideo(url){
       const maxW = Math.min(window.innerWidth*0.96, 1100);
       const maxH = window.innerHeight*0.90;
-      let h = Math.floor(maxW * 9 / 16 + 64); // مساحة لشريط التحكّم
+      let h = Math.floor(maxW * 9 / 16 + 64);
       if (h > maxH) { h = Math.floor(maxH); }
       const w = Math.floor(Math.min(maxW, h * 16 / 9));
       const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&allowfullscreen=true&autoplay=true&width=${w}&height=${h}`;
@@ -388,30 +402,77 @@
           </iframe>
         </div>
       `);
-      setTimeout(tryAutoFullscreen, 0);
+      setTimeout(()=>tryAutoFullscreen('landscape'), 0);
+    }
+
+    // ريلز (9:16) طولي + ملء الشاشة Portrait
+    function calcPortraitDims(){
+      // نفضّل ملء الارتفاع، ثم نحسب العرض 9/16
+      let vh = window.innerHeight, vw = window.innerWidth;
+      let h = Math.floor(vh * 0.98);
+      let w = Math.floor(h * 9 / 16);
+      if (w > vw*0.98){ // لو العرض أكبر من الشاشة، نكيّف على العرض
+        w = Math.floor(vw * 0.98);
+        h = Math.floor(w * 16 / 9);
+      }
+      // حد أقصى منطقي
+      w = Math.max(300, w);
+      h = Math.max(480, h);
+      return { w, h };
+    }
+
+    function openFacebookReel(url){
+      const {w,h} = calcPortraitDims();
+      const src=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&allowfullscreen=true&autoplay=true&width=${w}&height=${h}`;
+      openLightbox(`
+        <div id="fbReelWrap" style="width:${w}px;height:${h}px;max-width:100vw;max-height:100vh;display:flex;align-items:center;justify-content:center;">
+          <iframe
+            id="fbReelFrame"
+            src="${src}"
+            style="border:none;overflow:hidden; width:100%; height:100%"
+            scrolling="no"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; web-share"
+            allowfullscreen="true"
+            referrerpolicy="no-referrer">
+          </iframe>
+        </div>
+      `);
+
+      // مراقبة تغيّر أبعاد الشاشة أثناء الملء
+      document.addEventListener('fullscreenchange', onFsChange);
+      document.addEventListener('webkitfullscreenchange', onFsChange);
+      window.addEventListener('resize', adjustFbReelInFullscreen);
+
+      // ادخل ملء الشاشة Portrait
+      setTimeout(()=>tryAutoFullscreen('portrait'), 0);
+    }
+
+    function onFsChange(){
+      // عند الدخول لملء الشاشة أو الخروج منه، اضبط الأبعاد من جديد
+      adjustFbReelInFullscreen();
+    }
+
+    function adjustFbReelInFullscreen(){
+      const wrap = document.getElementById('fbReelWrap');
+      if (!wrap) return;
+      // في الملء: املأ الارتفاع، واضبط العرض 9/16
+      const vh = window.innerHeight, vw = window.innerWidth;
+      let h = Math.floor(vh);
+      let w = Math.floor(h * 9 / 16);
+      if (w > vw){ w = vw; h = Math.floor(w * 16 / 9); }
+      wrap.style.width = w + 'px';
+      wrap.style.height = h + 'px';
     }
 
     // صورة
     function openImage(src,alt){
       openLightbox(`<img src="${src}" alt="${(alt||'').replace(/"/g,'&quot;')}">`);
-      // للصور لا نحتاج ملء شاشة تلقائي، نتركها للمستخدم
     }
 
     // الخروج بالضغط خارج المحتوى أو بالـEsc
+    const lb=document.getElementById('lightbox');
     lb.addEventListener('click',e=>{ if(e.target===lb) closeLightbox(); });
     window.addEventListener('keydown',e=>{ if(e.key==='Escape' && lb.style.display==='flex') closeLightbox(); });
-
-    // عند الخروج من ملء الشاشة، نفك قفل الاتجاه
-    document.addEventListener('fullscreenchange', ()=>{
-      if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
-        try { screen.orientation.unlock(); } catch(_){}
-      }
-    });
-    document.addEventListener('webkitfullscreenchange', ()=>{
-      if (!document.webkitFullscreenElement && screen.orientation && screen.orientation.unlock) {
-        try { screen.orientation.unlock(); } catch(_){}
-      }
-    });
   </script>
 
   <!-- Firebase + المحتوى -->
@@ -466,6 +527,7 @@
 
         if(post.facebookURL){
           const safe = encodeURI(post.facebookURL);
+          // نفس الـopenFacebook سيقرّر إن كان ريلز أو فيديو عادي
           return `<div class="embed" onclick="openFacebook('${safe}')">
             <div class="embed-overlay" style="background-image:linear-gradient(45deg,#3b5998,#8b9dc3)">
               <button class="embed-big">▶</button>
