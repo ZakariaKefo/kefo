@@ -23,7 +23,7 @@
       --font:'Cairo',system-ui; --mono:'Share Tech Mono',monospace;
     }
     .light{
-      --bg:#f5fff6; --fg:#08210ف; --muted:#3a7b55;
+      --bg:#f5fff6; --fg:#08210f; --muted:#3a7b55;
       --primary:#2563eb; --primary-2:#5ea5ff; --secondary:#0d47a1;
       --card:#ffffff; --card-2:#f2fff7; --chip:#eef3ff;
       --love:#e91e63; --danger:#c62828;
@@ -46,12 +46,9 @@
       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
       font-size:clamp(14px,1.8vw,16px);
       -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;
-      touch-action: pan-x pan-y; /* يقلل من تكبير/سحب غريب */
+      touch-action: pan-x pan-y;
     }
-    /* منع تكبير النص عند التركيز في iOS + تعطيل الإيماءات */
     input,select,textarea,button{font-size:16px}
-    html{touch-action:manipulation}
-    /* صور/فيديو/إطارات داخل أي مكان لن تتجاوز العرض */
     img, iframe, video{display:block;max-width:100%;width:100%;height:auto}
 
     /* Matrix rain (يظهر فقط في الماتريكس) */
@@ -79,7 +76,7 @@
     .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,255,136,.18);background:var(--chip);color:var(--fg);cursor:pointer;white-space:nowrap}
     .chip.active{background:rgba(0,255,136,.18);box-shadow:0 0 16px rgba(0,255,136,.25)}
 
-    /* Content grid – ملاحظة: minmax(0,1fr) لمنع التمدد */
+    /* Content grid */
     .content{padding:120px 10px 140px;margin:0 auto;width:100%;max-width:1280px}
     #postsContainer{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;width:100%}
     @media (min-width:900px){.content{padding:130px 20px 40px}#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
@@ -94,7 +91,7 @@
     .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
     .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere;word-break:break-word}
 
-    /* Embed (thumbnail فقط – التشغيل في Lightbox) */
+    /* Embed */
     .embed{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:10px;
       box-shadow:0 0 0 1px rgba(0,255,136,.25) inset;cursor:pointer}
     .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}
@@ -131,7 +128,7 @@
     .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;padding:10px;overflow:auto}
     .modal{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;width:min(520px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg);border:1px solid rgba(0,0,0,.12)}
     .close-btn{position:absolute;top:8px;inset-inline-end:10px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--fg)}
-    .btn{padding:10px 15px;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;font-weight:800}
+    .btn{padding:10px 15px;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;font-weight:800;touch-action:manipulation}
     .input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);margin-bottom:12px;background:#fff;color:#111}
     body:not(.light):not(.pink) .input, body:not(.light):not(.pink) select, body:not(.light):not(.pink) textarea{background:rgba(10,30,15,.85);color:var(--fg);border-color:rgba(0,255,136,.22)}
     .label{font-weight:800;margin-top:5px;display:block}
@@ -143,12 +140,20 @@
     /* Lightbox (صور/فيديو) */
     .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:120;align-items:center;justify-content:center;padding:12px}
     .lightbox-content{max-width:min(1100px,96vw);max-height:90vh;position:relative}
-    /* لليوتيوب: 16:9 */
     .lb-media{width:min(96vw,1100px);max-height:90vh;aspect-ratio:16/9}
     .lb-media iframe{width:100%;height:100%;display:block;border:0;border-radius:12px}
-    /* للصور */
     .lightbox img{width:auto;max-width:96vw;max-height:90vh;height:auto;display:block;border:0;border-radius:12px}
     .lightbox-close{position:absolute;top:-44px;inset-inline-end:0;background:#000;border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
+
+    /* وضع ملء الشاشة الحقيقي */
+    .lightbox:fullscreen,
+    .lightbox:-webkit-full-screen{background:#000}
+    .lightbox:fullscreen .lightbox-content,
+    .lightbox:-webkit-full-screen .lightbox-content{width:100vw;height:100vh;max-width:100vw;max-height:100vh}
+    .lightbox:fullscreen .lb-media,
+    .lightbox:-webkit-full-screen .lb-media{width:100vw;height:100vh;max-width:100vw;max-height:100vh;aspect-ratio:auto}
+    .lightbox:fullscreen iframe,
+    .lightbox:-webkit-full-screen iframe{width:100%;height:100%}
   </style>
 </head>
 <body>
@@ -288,21 +293,15 @@
     }
     applyTheme(localStorage.getItem(themeKey)||"matrix");
 
-    /* تقوية منع التمدد الأفقي */
+    /* منع التمدد الأفقي */
     window.addEventListener('load',()=>{
       document.querySelectorAll('img,iframe,video').forEach(el=>{el.style.maxWidth='100%';el.style.width='100%';});
     });
 
-    /* تعطيل الإيماءات (Pinch/Double-tap) قدر الإمكان */
+    /* تعطيل Pinch/Double-tap قدر الإمكان */
     ['gesturestart','gesturechange','gestureend'].forEach(evt=>{
       window.addEventListener(evt, e=>e.preventDefault(), {passive:false});
     });
-
-    /* Helpers */
-    document.addEventListener('contextmenu',e=>e.preventDefault());
-    document.addEventListener('selectstart',e=>e.preventDefault());
-    document.addEventListener('touchstart',function(e){window.longTouch=setTimeout(()=>e.preventDefault(),500);},{passive:false});
-    document.addEventListener('touchend',()=>clearTimeout(window.longTouch));
 
     /* PWA */
     if ('serviceWorker' in navigator) {
@@ -327,8 +326,9 @@
     window.addEventListener('resize',()=>{cancelAnimationFrame(raf);rainResize();rainDraw();});
     rainResize(); rainDraw();
 
-    /* Lightbox (صور وفيديو) */
+    /* ====== Lightbox (صور/فيديو) + ملء الشاشة التلقائي ====== */
     const lb=document.getElementById('lightbox'); const lbInner=document.getElementById('lightboxInner');
+
     function openLightbox(contentHtml){
       lbInner.innerHTML=contentHtml;
       lb.style.display='flex'; document.body.style.overflow='hidden';
@@ -336,17 +336,39 @@
     function closeLightbox(){
       lb.style.display='none'; document.body.style.overflow='';
       lbInner.innerHTML=''; // تفريغ لإيقاف الفيديو
+      // فك قفل الاتجاه إن كان مقفولاً
+      if (screen.orientation && screen.orientation.unlock) { try { screen.orientation.unlock(); } catch(e){} }
+      // الخروج من ملء الشاشة لو ما خرج
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+      }
     }
     window.closeLightbox=closeLightbox;
 
+    // محاولة الدخول لملء الشاشة مباشرة بعد فتح اللايت بوكس (ضمن إيماءة المستخدم)
+    async function tryAutoFullscreen(){
+      const el = lb;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      try {
+        if (req) { await req.call(el); }
+        // قفل الاتجاه أفقي أثناء الفيديو لتحكمات أوضح (قد تفشل في بعض المتصفحات، لا مشكلة)
+        if (screen.orientation && screen.orientation.lock) {
+          try { await screen.orientation.lock('landscape'); } catch(_) {}
+        }
+      } catch(err){ console.warn('Fullscreen not allowed:', err); }
+    }
+
     function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
 
-    // يوتيوب (16:9 + تحكمات + ملء الشاشة)
+    // يوتيوب (16:9 + تحكمات + ملء الشاشة تلقائي)
     function openYouTube(id){
       const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
       openLightbox(`<div class="lb-media"><iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`);
+      // جرّب ملء الشاشة فورًا
+      setTimeout(tryAutoFullscreen, 0);
     }
-    // فيسبوك: حساب أبعاد صحيحة + إظهار زر Fullscreen
+
+    // فيسبوك: حساب أبعاد + إظهار زر Fullscreen + ملء الشاشة تلقائي
     function openFacebook(url){
       const maxW = Math.min(window.innerWidth*0.96, 1100);
       const maxH = window.innerHeight*0.90;
@@ -366,15 +388,30 @@
           </iframe>
         </div>
       `);
+      setTimeout(tryAutoFullscreen, 0);
     }
+
     // صورة
     function openImage(src,alt){
       openLightbox(`<img src="${src}" alt="${(alt||'').replace(/"/g,'&quot;')}">`);
+      // للصور لا نحتاج ملء شاشة تلقائي، نتركها للمستخدم
     }
 
-    // إغلاق بالضغط خارج المحتوى أو بالـEsc
+    // الخروج بالضغط خارج المحتوى أو بالـEsc
     lb.addEventListener('click',e=>{ if(e.target===lb) closeLightbox(); });
     window.addEventListener('keydown',e=>{ if(e.key==='Escape' && lb.style.display==='flex') closeLightbox(); });
+
+    // عند الخروج من ملء الشاشة، نفك قفل الاتجاه
+    document.addEventListener('fullscreenchange', ()=>{
+      if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
+        try { screen.orientation.unlock(); } catch(_){}
+      }
+    });
+    document.addEventListener('webkitfullscreenchange', ()=>{
+      if (!document.webkitFullscreenElement && screen.orientation && screen.orientation.unlock) {
+        try { screen.orientation.unlock(); } catch(_){}
+      }
+    });
   </script>
 
   <!-- Firebase + المحتوى -->
@@ -407,7 +444,7 @@
     function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='skeleton skeleton-card'; postsContainer.appendChild(sk);} }
     showSkeletons();
 
-    function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
+    function ytIdFrom(u){try{const url=new URL(u);let v=url.searchParams.get('v');if(!v){const p=url.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
     function toYouTubeThumb(u){ const id=ytIdFrom(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
 
     function renderMedia(post){
