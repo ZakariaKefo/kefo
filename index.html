@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <!-- منع الزوم + تثبيت عرض الموبايل -->
+  <!-- تثبيت العرض للموبايل + منع الزوم -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#00ff88" id="theme-color" />
   <title>منصة شاهد عيان - KeFo Posts</title>
@@ -66,31 +66,30 @@
     .badge-gold{display:none;align-items:center;gap:6px;background:linear-gradient(90deg,#ffe57f,#ffd740);
       color:#5b4100;border:none;border-radius:999px;padding:6px 10px;font-weight:900;box-shadow:var(--featuredGlow)}
 
-    /* المحتوى الرئيسي */
     .content{padding:10px;margin:0 auto;width:100%;max-width:1280px}
     #postsContainer{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;width:100%;padding-bottom:120px}
     @media (min-width:900px){#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
     @media (min-width:1400px){#postsContainer{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
 
-    /* بطاقات عامة */
     .post{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;padding:14px;
       box-shadow:var(--shadow),0 0 0 1px rgba(0,255,136,.15) inset;position:relative;overflow:hidden;
       transition:all .25s;opacity:0;transform:translateY(10px);width:100%;min-width:0}
     .post.visible{opacity:1;transform:translateY(0)}
+    .post.highlight{outline:2px solid var(--primary); box-shadow:var(--shadow), 0 0 0 2px rgba(0,255,136,.35) inset;}
     .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
     .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
     .badge.featured{background:linear-gradient(90deg,#ffe57f,#ffd740);color:#5b4100;box-shadow:var(--featuredGlow)}
     .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere;word-break:break-word}
 
-    /* سكشن الترند والمتصدرين كـ full-span */
+    /* سكشن الترند والمتصدرين داخل الخلاصة */
     .trend, .creators{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:16px;border:1px solid rgba(0,255,136,.12);box-shadow:var(--shadow);padding:10px}
     .section-title{display:flex;align-items:center;gap:8px;font-weight:900;margin-bottom:8px}
     .section-title i{filter: drop-shadow(0 0 6px rgba(0,255,136,.4))}
     .trend-list{display:flex;gap:10px;overflow-x:auto;padding:4px}
-    .trend-card{flex:0 0 230px;background:rgba(0,0,0,.15);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:10px}
+    .trend-card{flex:0 0 230px;background:rgba(0,0,0,.15);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:10px;cursor:pointer}
     .trend-card .thumb{border-radius:10px;overflow:hidden;aspect-ratio:16/9;background:#000;margin-bottom:6px}
     .creator-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-    .creator{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.12);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:8px}
+    .creator{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.12);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:8px;cursor:pointer}
     .avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,#033,#0f6);color:#eaff}
     .creator .meta{display:grid}
     .creator .meta small{color:var(--muted)}
@@ -98,13 +97,18 @@
     .follow-btn.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407}
     .full-span{grid-column:1/-1}
 
-    /* يوتيوب / صور */
+    /* وسائط */
     .embed{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:10px;
       box-shadow:0 0 0 1px rgba(0,255,136,.25) inset;cursor:pointer}
     .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}
     .embed-overlay::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,.15))}
     .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;touch-action:manipulation;
       background:radial-gradient(circle at 30% 30%, #eafff4 0%, #cbffe8 60%, #b0ffd9 100%);box-shadow:0 10px 30px rgba(0,255,136,.35),0 0 30px rgba(0,255,136,.45)}
+
+    /* بطاقة رابط بديلة عند غياب صورة OG */
+    .link-card{margin-top:10px;border:1px dashed rgba(0,255,136,.25);border-radius:14px;padding:10px;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.06))}
+    .link-card .host{font-weight:900;color:var(--muted)}
+    .link-card .actions{display:flex;justify-content:flex-end;margin-top:6px}
 
     /* أزرار عمودية */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:stretch}
@@ -137,7 +141,7 @@
     .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:linear-gradient(0deg, rgba(0,0,0,.08), rgba(0,0,0,0));padding:10px 0;border-radius:25px 25px 0 0;border-top:1px solid rgba(0,0,0,.08);box-shadow:0 -4px 16px rgba(0,0,0,.06);z-index:50}
 
     .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;padding:10px;overflow:auto}
-    .modal{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;width:min(520px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg);border:1px solid rgba(0,0,0,.12)}
+    .modal{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;width:min(720px,92vw);padding:20px;position:relative;box-shadow:var(--shadow);color:var(--fg);border:1px solid rgba(0,0,0,.12)}
     .close-btn{position:absolute;top:8px;inset-inline-end:10px;border:none;background:none;font-size:18px;cursor:pointer;color:var(--fg)}
     .btn{padding:10px 15px;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407;font-weight:800;touch-action:manipulation}
     .input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,.12);margin-bottom:12px;background:#fff;color:#111}
@@ -154,12 +158,6 @@
     .lb-media iframe{width:100%;height:100%;display:block;border:0;border-radius:12px}
     .lightbox img{width:auto;max-width:96vw;max-height:90vh;height:auto;display:block;border:0;border-radius:12px}
     .lightbox-close{position:absolute;top:-44px;inset-inline-end:0;background:#000;border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
-
-    /* Onboarding */
-    .onboard{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:14px}
-    .on-card{width:min(640px,92vw);background:linear-gradient(180deg,var(--card),var(--card-2));border:1px solid rgba(0,255,136,.15);border-radius:16px;box-shadow:var(--shadow);padding:18px}
-    .on-steps{display:grid;gap:10px;margin:10px 0}
-    .on-step{display:flex;gap:10px;align-items:flex-start;background:rgba(0,0,0,.12);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:10px}
   </style>
 </head>
 <body>
@@ -177,18 +175,17 @@
     </div>
   </div>
 
-  <!-- لم نعد نستخدم bars الثابتة؛ سنضيف بطاقاتها داخل الخلاصة -->
   <div class="content"><div id="postsContainer"></div></div>
 
   <div class="bottom-nav">
     <div class="nav-btn" onclick="openNewPost()"><i>➕</i>إضافة</div>
     <div class="nav-btn" onclick="showToast('قسم الدردشة قيد التطوير')"><i>💬</i>دردشة</div>
     <div class="nav-btn" onclick="showToast('الأقسام قيد التطوير')"><i>📂</i>الأقسام</div>
-    <div class="nav-btn" onclick="showToast('ملفي الشخصي قيد التطوير')"><i>👤</i>الملف</div>
+    <div class="nav-btn" onclick="openMyProfile()"><i>👤</i>الملف</div>
     <div class="nav-btn" onclick="openSettings()"><i>⚙️</i>إعدادات</div>
   </div>
 
-  <!-- نافذة نشر منشور -->
+  <!-- نافذة نشر -->
   <div id="newPostModal" class="modal-backdrop">
     <div class="modal">
       <button class="close-btn" onclick="closeNewPost()">✖</button>
@@ -212,8 +209,8 @@
       <textarea id="postContent" class="input" rows="3" placeholder="اكتب المنشور..."></textarea>
 
       <div id="imageGroup">
-        <label class="label">رابط صورة / رابط منشور اجتماعي (يُفضّل لصق رابط المنشور)</label>
-        <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/post/.. أو https://example.com/image.jpg">
+        <label class="label">رابط صورة / رابط منشور اجتماعي (مفضّل)</label>
+        <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/post/... أو https://example.com/image.jpg">
       </div>
 
       <div id="youtubeGroup">
@@ -234,21 +231,19 @@
         <button class="btn" style="flex:1" onclick="cycleTheme()">تغيير الوضع</button>
         <div id="themeLabel" style="font-weight:800;color:var(--muted);">الوضع الحالي: ماتريكس</div>
       </div>
-
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn" style="flex:1" onclick="openReferrals()">إحالاتك</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة الإحالات -->
+  <!-- الإحالات -->
   <div id="referralsModal" class="modal-backdrop">
     <div class="modal">
       <button class="close-btn" onclick="closeReferrals()">✖</button>
       <h3>إحالاتك</h3>
       <p style="color:var(--muted);font-weight:800;line-height:1.8">
         عند وصولك إلى <b>3 إحالات</b> أو أكثر، تظهر لك <b>شارة مميّز</b> ويتم <b>إبراز منشوراتك</b> في الخلاصة.
-        وكلما زادت إحالاتك، زاد ظهور منشوراتك للمستخدمين.
       </p>
       <div class="trend" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <span>رابط دعوتك:</span>
@@ -259,7 +254,25 @@
     </div>
   </div>
 
-  <!-- تنبيهات داخلية -->
+  <!-- الملف الشخصي -->
+  <div id="profileModal" class="modal-backdrop">
+    <div class="modal">
+      <button class="close-btn" onclick="closeProfile()">✖</button>
+      <h3 id="profileTitle">ملف المستخدم</h3>
+
+      <div id="profileControls" style="display:none; margin-bottom:10px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="profileNameInput" class="input" placeholder="اسمك">
+          <button class="btn" onclick="saveProfileName()">حفظ الاسم</button>
+        </div>
+        <small style="color:var(--muted)">لنفس هذا الجهاز/المتصفح</small>
+      </div>
+
+      <div id="profilePosts"></div>
+    </div>
+  </div>
+
+  <!-- تنبيه بسيط -->
   <div id="infoModal" class="modal-backdrop">
     <div class="modal">
       <button class="close-btn" onclick="closeInfo()">✖</button>
@@ -271,7 +284,7 @@
     </div>
   </div>
 
-  <!-- Lightbox عام للصور/يوتيوب -->
+  <!-- Lightbox -->
   <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="عرض الوسائط">
     <div class="lightbox-content">
       <button class="lightbox-close" onclick="closeLightbox()">إغلاق ✖</button>
@@ -279,28 +292,12 @@
     </div>
   </div>
 
-  <!-- Onboarding -->
-  <div id="onboard" class="onboard">
-    <div class="on-card">
-      <h3>👋 أهلاً بك في KeFo</h3>
-      <div class="on-steps">
-        <div class="on-step"><b>1</b> <div>أنشئ منشورًا بصورة (أو رابط منشور اجتماعي) أو فيديو يوتيوب.</div></div>
-        <div class="on-step"><b>2</b> <div>تابع أفضل الناشرين وتصفّح الأكثر تفاعلاً اليوم.</div></div>
-        <div class="on-step"><b>3</b> <div>ادعُ أصدقاءك عبر رابطك الفريد واربح شارة “مميّز”.</div></div>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn" id="onInstall">تثبيت التطبيق 📥</button>
-        <button class="btn" id="onStart">ابدأ الآن</button>
-      </div>
-    </div>
-  </div>
-
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- إعدادات عامة + حماية + PWA + OG endpoint -->
+  <!-- إعدادات عامة + حماية + PWA + OG endpoint + اسم فريد -->
   <script>
-    // ضع Endpoint خادم Open Graph إن كنت فعّلته (اختياري)
-    const OG_ENDPOINT = ''; // مثل: 'https://kefo-og.your-subdomain.workers.dev/?url='
+    // ضع Endpoint خادم Open Graph إن كنت فعّلته (اختياري) — للحصول على صور روابط المنشورات
+    const OG_ENDPOINT = ''; // مثال: 'https://kefo-og.your-subdomain.workers.dev/?url='
 
     function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";syncMediaInputs();loadAuthorField();}
     function closeNewPost(){document.getElementById("newPostModal").style.display="none";document.body.style.overflow="";}
@@ -330,15 +327,10 @@
     }
     applyTheme(localStorage.getItem(themeKey)||"matrix");
 
-    /* منع التمدد + إيماءات الزوم */
-    window.addEventListener('load',()=>{
-      document.querySelectorAll('img,iframe,video').forEach(el=>{el.style.maxWidth='100%';el.style.width='100%';});
-    });
+    /* منع الزوم + حماية */
     ['gesturestart','gesturechange','gestureend'].forEach(evt=>{
       window.addEventListener(evt, e=>e.preventDefault(), {passive:false});
     });
-
-    /* حماية المحتوى */
     document.addEventListener('contextmenu', e=>e.preventDefault());
     document.addEventListener('selectstart', e=>e.preventDefault());
     document.addEventListener('copy', e=>e.preventDefault());
@@ -346,19 +338,17 @@
     document.addEventListener('touchstart', e=>{ window.longTouch=setTimeout(()=>e.preventDefault(),500); }, {passive:false});
     document.addEventListener('touchend', ()=>clearTimeout(window.longTouch));
 
-    /* PWA + Onboarding */
+    /* PWA */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(console.error); });
     }
     let deferredPrompt=null; const installBtn=document.getElementById('installBtn');
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt=e;
       if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) installBtn.style.display='inline-flex';
-      if (!localStorage.getItem('onboarded')) document.getElementById('onboard').style.display='flex';
+      if (!localStorage.getItem('onboarded')) showInfo('أهلاً بك','يمكنك تثبيت التطبيق من زر التثبيت في الأعلى، وابدأ بالنشر الآن!');
     });
     installBtn?.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); const c = await deferredPrompt.userChoice.catch(()=>null); deferredPrompt=null; installBtn.style.display='none'; showToast(c && c.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.'); });
     window.addEventListener('appinstalled',()=>{showToast('تم تثبيت التطبيق ✅');installBtn.style.display='none';});
-    document.getElementById('onInstall').onclick = ()=> installBtn?.click();
-    document.getElementById('onStart').onclick = ()=>{ localStorage.setItem('onboarded','1'); document.getElementById('onboard').style.display='none'; };
 
     /* Lightbox */
     const lb=document.getElementById('lightbox');
@@ -374,7 +364,7 @@
     };
     window.openImage = function(src,alt){ openLightbox(`<img src="${src}" alt="${(alt||'').replace(/"/g,'&quot;')}">`); };
 
-    /* حقول الوسائط: إظهار/إخفاء */
+    /* حقول الوسائط */
     function syncMediaInputs(){
       const imgVal = document.getElementById('imageURL').value.trim();
       const ytVal  = document.getElementById('youtubeURL').value.trim();
@@ -387,12 +377,16 @@
     window.addEventListener('input', (e)=>{
       if(e.target && (e.target.id==='imageURL' || e.target.id==='youtubeURL')) syncMediaInputs();
     });
-    window.addEventListener('load', syncMediaInputs);
 
-    /* اسم المستخدم + كود الدعوة */
+    /* اسم المستخدم + مؤلف */
     function loadAuthorField(){
       const stored = localStorage.getItem('authorName') || '';
       document.getElementById('authorName').value = stored;
+    }
+    function getMyAuthorId(){
+      let id = localStorage.getItem('authorId');
+      if(!id){ id = 'a_' + Math.random().toString(36).slice(2,10); localStorage.setItem('authorId', id); }
+      return id;
     }
     function ensureRefCode(){
       let code = localStorage.getItem('refCode');
@@ -407,7 +401,7 @@
       if(el) el.textContent = url;
     }
 
-    /* فتح/إغلاق نافذة الإحالات */
+    /* إحالات */
     function openReferrals(){
       updateRefModalUI();
       document.getElementById('referralsModal').style.display='flex';
@@ -442,14 +436,26 @@
       }catch(e){ console.warn('OG error', e); }
       return null;
     }
+
+    /* ملف شخصي */
+    function openMyProfile(){ openProfile(getMyAuthorId(), true); }
+    function openProfile(authorId, isMine=false){
+      const modal = document.getElementById('profileModal');
+      modal.style.display='flex'; document.body.style.overflow='hidden';
+      document.getElementById('profileControls').style.display = isMine ? 'block' : 'none';
+      loadProfile(authorId, isMine);
+    }
+    function closeProfile(){ document.getElementById('profileModal').style.display='none'; document.body.style.overflow=''; document.getElementById('profilePosts').innerHTML=''; }
+    window.openMyProfile = openMyProfile; window.closeProfile = closeProfile;
   </script>
 
-  <!-- Firebase + الخلاصة + الترند والمتصدرين داخل الخلاصة -->
+  <!-- Firebase + الخلاصة + الترند + الملف + التفرّد + الحذف -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
       getFirestore, collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc,
-      serverTimestamp, getCountFromServer, increment, where, getDocs, Timestamp
+      serverTimestamp, getCountFromServer, increment, where, getDocs, Timestamp,
+      getDoc, setDoc, deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -469,7 +475,7 @@
     const postsContainer=document.getElementById("postsContainer");
     const goldBadge   = document.getElementById('goldBadge');
 
-    /* إحالات: تسجيل زيارة برابط ref */
+    /* إحالات: تسجيل زيارة ref */
     async function recordReferralIfAny(){
       try{
         const params = new URLSearchParams(location.search);
@@ -511,8 +517,11 @@
 
     const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
 
+    function domainOf(u){ try{ return new URL(u).host.replace(/^www\./,''); }catch{return ''; } }
+
     function renderMedia(post){
       try{
+        // صورة OG من رابط منشور
         if (post.ogImage) {
           const img = post.ogImage.replace(/"/g,'&quot;');
           const srcLink = post.linkURL ? post.linkURL.replace(/"/g,'&quot;') : '#';
@@ -525,10 +534,12 @@
             </div>
           `;
         }
+        // صورة مباشرة
         if(post.imageURL){
           const safe=post.imageURL.replace(/"/g,'&quot;');
           return `<img src="${safe}" alt="صورة" loading="lazy" onclick="openImage('${safe}','صورة')">`;
         }
+        // يوتيوب
         if(post.youtubeURL){
           const id = ytIdFrom(post.youtubeURL);
           const thumb=toYouTubeThumb(post.youtubeURL);
@@ -539,11 +550,20 @@
             </div>
           </div>`;
         }
+        // إن كان لدينا linkURL بدون صورة og — بطاقة رابط أنيقة
+        if (post.linkURL){
+          const host = domainOf(post.linkURL);
+          const link = post.linkURL.replace(/"/g,'&quot;');
+          return `<div class="link-card">
+            <div class="host">🔗 ${host}</div>
+            <div class="actions"><a class="btn" href="${link}" target="_blank" rel="noopener" style="padding:6px 10px;border-radius:10px;font-size:13px">عرض المنشور الأصلي ↗</a></div>
+          </div>`;
+        }
         return '';
       }catch(e){ console.error('renderMedia error', e); return ''; }
     }
 
-    /* دعوات: عدّاد + شارة (تُفتح من الإعدادات) */
+    /* دعوات */
     async function loadInvites(){
       try{
         const my = ensureRefCode();
@@ -558,10 +578,9 @@
     }
     window.loadInvites = loadInvites;
 
-    /* يبني بطاقة "الأكثر تفاعلاً اليوم" داخل الخلاصة */
+    /* يبني "الأكثر تفاعلاً" داخل الخلاصة */
     function buildTrendSection(posts){
       try{
-        // تصفية اليوم
         const now = new Date();
         const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0);
         const today = posts.filter(p=>{
@@ -579,12 +598,13 @@
         top.forEach(p=>{
           const media = p.ogImage ? `<div class="thumb"><img src="${p.ogImage}" alt=""></div>` :
                         p.imageURL ? `<div class="thumb"><img src="${p.imageURL}" alt=""></div>` :
-                        p.youtubeURL ? `<div class="thumb"><img src="${toYouTubeThumb(p.youtubeURL)||''}" alt=""></div>` : '';
+                        p.youtubeURL ? `<div class="thumb"><img src="${toYouTubeThumb(p.youtubeURL)||''}" alt=""></div>` : `<div class="thumb" style="background:#08160c"></div>`;
           const loves = p.loves||0;
           const type  = p.type||'منوّع';
           const content = (p.content||'').slice(0,100);
           const card = document.createElement('div');
           card.className='trend-card';
+          card.setAttribute('data-post-id', p.id);
           card.innerHTML = `
             ${media}
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
@@ -593,6 +613,7 @@
             </div>
             <div style="color:var(--fg)">${content}</div>
           `;
+          card.onclick = ()=> scrollToPost(p.id);
           list.appendChild(card);
         });
         wrap.innerHTML = `<div class="section-title"><i>🔥</i><b>الأكثر تفاعلاً اليوم</b></div>`;
@@ -601,8 +622,8 @@
       }catch(e){ console.warn('buildTrendSection error', e); return null; }
     }
 
-    /* يبني بطاقة "لوحة المتصدرين" داخل الخلاصة */
-    function buildCreatorsSection(posts){
+    /* متصدرون بالاعتماد على authorId (أدق) */
+    async function buildCreatorsSection(posts){
       try{
         const now = new Date();
         const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
@@ -610,14 +631,30 @@
           const d = p.timestamp && p.timestamp.toDate ? p.timestamp.toDate() : null;
           return d && d >= start;
         });
-        const agg = {};
+
+        const agg = {}; // authorId -> {score, anyName}
         last7.forEach(p=>{
-          const name = (p.authorName||'').trim();
-          if(!name) return;
-          agg[name] = (agg[name]||0) + (p.loves||0);
+          const aid = p.authorId || ('name:'+ (p.authorName||''));
+          agg[aid] = agg[aid] || {score:0, anyName:p.authorName||'مستخدم'};
+          agg[aid].score += (p.loves||0);
+          if (!agg[aid].anyName && p.authorName) agg[aid].anyName = p.authorName;
         });
-        const arr = Object.entries(agg).map(([name,score])=>({name,score})).sort((a,b)=>b.score-a.score).slice(0,3);
+        let arr = Object.entries(agg).map(([authorId, v])=>({authorId,score:v.score, anyName:v.anyName}));
+        arr.sort((a,b)=>b.score-a.score);
+        arr = arr.slice(0,3);
         if(!arr.length) return null;
+
+        // جلب أسماء دقيقة من authors إن وجدت
+        const listResolved = [];
+        for (const item of arr){
+          if(item.authorId.startsWith('a_')){
+            const ad = await getDoc(doc(db,'authors', item.authorId)).catch(()=>null);
+            const name = ad?.exists() ? (ad.data().name || item.anyName) : item.anyName;
+            listResolved.push({...item, name});
+          } else {
+            listResolved.push({...item, name: item.anyName});
+          }
+        }
 
         const wrap = document.createElement('div');
         wrap.className = 'creators full-span';
@@ -626,10 +663,11 @@
         list.className = 'creator-list';
 
         const followed = getFollowed();
-        arr.forEach(({name,score})=>{
+        listResolved.forEach(({authorId,score,name})=>{
           const item=document.createElement('div');
           item.className='creator';
-          const initial = name.trim()[0] || 'ن';
+          item.setAttribute('data-author-id', authorId);
+          const initial = (name.trim()[0] || 'ن');
           const isFollow = followed.includes(name);
           item.innerHTML = `
             <div class="avatar">${initial}</div>
@@ -637,18 +675,23 @@
               <b>${name}</b>
               <small>❤️ ${score} في 7 أيام</small>
             </div>
-            <button class="follow-btn ${isFollow?'active':''}" data-name="${name}">
+            <button class="follow-btn ${isFollow?'active':''}" data-name="${name}" onclick="event.stopPropagation();">
               ${isFollow?'متابَع':'متابعة'}
             </button>
           `;
+          item.onclick = ()=>{
+            if(authorId.startsWith('a_')) window.openProfile(authorId, authorId===localStorage.getItem('authorId'));
+            else openProfileByName(name);
+          };
           list.appendChild(item);
         });
         wrap.appendChild(list);
 
-        // سلوك المتابعة
+        // أزرار متابعة
         setTimeout(()=>{
           wrap.querySelectorAll('.follow-btn').forEach(btn=>{
-            btn.onclick = ()=>{
+            btn.onclick = (ev)=>{
+              ev.stopPropagation();
               const name = btn.getAttribute('data-name');
               let list = getFollowed();
               if(list.includes(name)){ list = list.filter(n=>n!==name); btn.classList.remove('active'); btn.textContent='متابعة'; }
@@ -661,31 +704,42 @@
       }catch(e){ console.warn('buildCreatorsSection error', e); return null; }
     }
 
+    // تمرير إلى المنشور الأصلي + إبراز مؤقت
+    window.scrollToPost = function(id){
+      const el = document.getElementById('post-'+id);
+      if(!el) return;
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+      el.classList.add('highlight');
+      setTimeout(()=> el.classList.remove('highlight'), 1600);
+    };
+
     if (db){
       const postsQ=query(collection(db,"posts"),orderBy("timestamp","desc"));
-      onSnapshot(postsQ, snap=>{
+      onSnapshot(postsQ, async (snap)=>{
         const posts=snap.docs.map(d=>({id:d.id,...d.data()}));
 
         // تفريغ الخلاصة
         postsContainer.innerHTML = posts.length ? "" : `<div class="error">لا توجد منشورات حالياً.</div>`;
 
-        // إدراج سكشن الترند والمتصدّرين كأول عنصرين (إن وُجدا)
+        // سكشن الترند والمتصدرين
         const trendSec = buildTrendSection(posts);
         if (trendSec) postsContainer.appendChild(trendSec);
 
-        const creatorsSec = buildCreatorsSection(posts);
+        const creatorsSec = await buildCreatorsSection(posts);
         if (creatorsSec) postsContainer.appendChild(creatorsSec);
 
-        // ثم بقية المنشورات
+        // بقية المنشورات
         const followed = getFollowed();
-        const highlightAuthor = goldBadge.style.display!=='none' ? (localStorage.getItem('authorName')||'').trim() : null;
+        const myId = localStorage.getItem('authorId') || '';
+        const myName = localStorage.getItem('authorName') || '';
+        const highlightAuthor = goldBadge.style.display!=='none' ? myName.trim() : null;
 
         let postCount = 0;
         posts.forEach((post)=>{
           const loves=post.loves||0, dislikes=post.dislikes||0;
-          const card=document.createElement('div'); card.className='post'; card.dataset.postId=post.id;
+          const card=document.createElement('div'); card.className='post'; card.dataset.postId=post.id; card.id='post-'+post.id;
 
-          const shareLink = post.ogImage || post.imageURL || post.youtubeURL || location.href;
+          const shareLink = post.ogImage || post.imageURL || post.youtubeURL || post.linkURL || location.href;
           const safeText  = (post.content||'').replace(/"/g,'&quot;');
           const author    = (post.authorName||'مستخدم').replace(/</g,'&lt;');
           const featured  = (highlightAuthor && post.authorName===highlightAuthor) ? ' featured' : '';
@@ -727,7 +781,6 @@
           observer.observe(card);
 
           postCount++;
-          // شريط إعلانات بعد كل 5 منشورات (لا يحسب السكاشن)
           if(postCount%5===0){
             const wrapper=document.createElement('div'); wrapper.className='ad-slider-wrapper full-span';
             const slider=document.createElement('div'); slider.className='ad-slider';
@@ -739,7 +792,6 @@
             wrapper.appendChild(slider);
           }
 
-          // إبراز منشورات المؤلفين المتابعين
           if (followed.includes(post.authorName||'')){
             card.style.outline='1px solid rgba(0,255,136,.35)';
             card.style.boxShadow='var(--shadow), 0 0 20px rgba(0,255,136,.15) inset';
@@ -785,7 +837,7 @@
         catch(e){ console.error("add comment error",e); window.showToast?.("تعذّر إضافة التعليق، حاول لاحقًا."); }
       };
 
-      // تصويت: خيار واحد فقط
+      // تصويت: خيار واحد
       window.vote=async function(postId,field,btn){
         const v=JSON.parse(localStorage.getItem("votes")||"{}");
         if(v[postId]){window.showToast?.("لقد صوّتَّ مسبقًا لهذا المنشور.");return;}
@@ -798,7 +850,7 @@
         }catch(e){ console.error("vote error",e); window.showToast?.("تعذّر تسجيل التصويت، حاول لاحقًا."); }
       };
 
-      // مشاركة: نص -> رابط الوسيط (إن وجد) -> الدعوة
+      // مشاركة
       window.sharePost = function(text, mediaUrl){
         const site = (location.origin + location.pathname).replace(/index\.html?$/,'');
         const parts = [];
@@ -814,25 +866,67 @@
         }
       };
 
-      // نشر: صورة/OG أو يوتيوب + اسم ناشر
+      // —— الاسم الفريد / المؤلف ——
+      function normalizeName(n){ return (n||'').trim(); }
+      function nameLower(n){ return normalizeName(n).toLowerCase(); }
+      async function claimAuthorName(authorId, desiredName){
+        const clean = normalizeName(desiredName);
+        if(!clean) return {ok:false, reason:'empty'};
+        const qx = query(collection(db,'authors'), where('nameLower','==', nameLower(clean)));
+        const snap = await getDocs(qx);
+        let takenBy = null;
+        snap.forEach(d=>{ takenBy = d.id; });
+        if(takenBy && takenBy !== authorId){
+          const suggestion = clean + Math.floor(100 + Math.random()*900);
+          return {ok:true, name:suggestion, changed:true};
+        }
+        return {ok:true, name:clean, changed:false};
+      }
+      async function ensureAuthorDoc(authorId, finalName){
+        const ref = doc(db,'authors', authorId);
+        const data = { name: finalName, nameLower: nameLower(finalName), updatedAt: serverTimestamp() };
+        const exist = await getDoc(ref);
+        if(exist.exists()){
+          await updateDoc(ref, data);
+        }else{
+          await setDoc(ref, { ...data, createdAt: serverTimestamp() });
+        }
+      }
+      async function renameAllMyPosts(authorId, newName){
+        // تحديث جميع منشورات هذا المؤلف
+        const qx = query(collection(db,'posts'), where('authorId','==', authorId));
+        const snap = await getDocs(qx);
+        const ops = [];
+        snap.forEach(d=>{
+          ops.push(updateDoc(doc(db,'posts', d.id), { authorName: newName }));
+        });
+        await Promise.all(ops);
+      }
+
+      // نشر
       window.submitPost = async function(){
         const type = document.getElementById("postType").value;
         const content = document.getElementById("postContent").value.trim();
         const imageURLInput = document.getElementById("imageURL").value.trim();
         const youtubeURL = document.getElementById("youtubeURL").value.trim();
-        const authorName = document.getElementById("authorName").value.trim();
+        let authorName = document.getElementById("authorName").value.trim();
         const errorDiv = document.getElementById("postError");
 
         errorDiv.style.display="none";
-        if(!authorName){ errorDiv.textContent="رجاءً اكتب اسمك (يُعرض كناشر)."; errorDiv.style.display="block"; return; }
-        if(!type || !content){
-          errorDiv.textContent = "الرجاء ملء نوع المنشور والمحتوى";
-          errorDiv.style.display="block";
-          return;
-        }
+        if(!type || !content){ errorDiv.textContent = "الرجاء ملء نوع المنشور والمحتوى"; errorDiv.style.display="block"; return; }
+
+        const authorId = localStorage.getItem('authorId') || (()=>{ const id='a_'+Math.random().toString(36).slice(2,10); localStorage.setItem('authorId', id); return id; })();
+
+        // تملك الاسم أو اقترح بديل
+        const claim = await claimAuthorName(authorId, authorName || (localStorage.getItem('authorName')||''));
+        if(!claim.ok){ errorDiv.textContent = "يرجى إدخال اسم صالح."; errorDiv.style.display="block"; return; }
+        if(claim.changed){ showInfo('الاسم مستخدم','اخترنا لك اسمًا مقترحًا: '+claim.name+' — يمكنك تغييره لاحقًا من الملف الشخصي.'); }
+        authorName = claim.name;
+        localStorage.setItem('authorName', authorName);
+        await ensureAuthorDoc(authorId, authorName);
 
         let payload = {
-          type, content, authorName,
+          type, content, authorName, authorId,
           imageURL: null, youtubeURL: null,
           linkURL: null, ogImage: null,
           loves:0, dislikes:0,
@@ -847,15 +941,16 @@
           } else {
             payload.linkURL = imageURLInput;
             try{
-              const og = typeof resolveOG==='function' ? await resolveOG(imageURLInput) : null;
-              if (og && og.image) payload.ogImage = og.image;
+              if (OG_ENDPOINT){
+                const og = await resolveOG(imageURLInput);
+                if (og && og.image) payload.ogImage = og.image;
+              }
             }catch{}
           }
         }
 
         try{
           await addDoc(collection(db, "posts"), payload);
-          localStorage.setItem('authorName', authorName);
           closeNewPost();
           window.showToast?.("تم نشر المنشور ✅");
           document.getElementById("postType").value="";
@@ -870,11 +965,129 @@
         }
       };
 
+      // الملف الشخصي: تحميل
+      window.loadProfile = async function(authorId, isMine){
+        const titleEl = document.getElementById('profileTitle');
+        const postsEl = document.getElementById('profilePosts');
+        postsEl.innerHTML = '...';
+
+        // جلب الاسم من authors أو من أول منشور
+        let name = '';
+        try{
+          const a = await getDoc(doc(db,'authors', authorId));
+          if(a.exists()) name = a.data().name || '';
+        }catch{}
+        if(!name && isMine){ name = localStorage.getItem('authorName') || ''; }
+
+        titleEl.textContent = name ? ('منشورات: ' + name) : 'منشورات المستخدم';
+
+        if (isMine){
+          const input = document.getElementById('profileNameInput');
+          input.value = name || (localStorage.getItem('authorName')||'');
+        }
+
+        // جلب منشورات هذا المؤلف
+        const qx = query(collection(db,'posts'), where('authorId','==', authorId), orderBy('timestamp','desc'));
+        const snap = await getDocs(qx);
+        postsEl.innerHTML = '';
+        if (snap.empty){
+          postsEl.innerHTML = `<div class="error">لا توجد منشورات لهذا المستخدم.</div>`;
+          return;
+        }
+        snap.docs.forEach(d=>{
+          const p = d.data();
+          const row = document.createElement('div');
+          row.className='post';
+          row.innerHTML = `
+            <div class="post-header">
+              <span class="badge">⟐ ${p.type||'منوّع'}</span>
+              <small style="color:var(--muted);margin-inline-start:auto">${(p.authorName||'مستخدم')}</small>
+            </div>
+            <p>${(p.content||'')}</p>
+            ${renderMedia(p)}
+            ${isMine ? `<div style="display:flex;justify-content:flex-end;margin-top:8px;">
+              <button class="btn" onclick="deleteMyPost('${d.id}')">حذف</button>
+            </div>` : ``}
+          `;
+          postsEl.appendChild(row);
+        });
+      };
+
+      // الملف الشخصي: حفظ الاسم (مع تفرد + تحديث كل منشورات المؤلف)
+      window.saveProfileName = async function(){
+        const authorId = localStorage.getItem('authorId');
+        if(!authorId){ showToast('لا يوجد معرف مؤلف محلي'); return; }
+        const input = document.getElementById('profileNameInput');
+        let desired = (input.value||'').trim();
+        if(!desired){ showToast('أدخل اسمًا صالحًا'); return; }
+
+        const claim = await claimAuthorName(authorId, desired);
+        let finalName = claim.name;
+        if (claim.changed){
+          showInfo('الاسم مستخدم','اخترنا لك: '+finalName+' — يمكنك المحاولة باسم آخر.');
+        }
+        await ensureAuthorDoc(authorId, finalName);
+        await renameAllMyPosts(authorId, finalName);
+        localStorage.setItem('authorName', finalName);
+        showToast('تم تحديث الاسم');
+        // إعادة تحميل الملف
+        loadProfile(authorId, true);
+      };
+
+      // فتح ملف حسب الاسم (للأشخاص القدامى بلا authorId)
+      window.openProfileByName = async function(name){
+        const qx = query(collection(db,'posts'), where('authorName','==', name), orderBy('timestamp','desc'));
+        const snap = await getDocs(qx);
+        const modal = document.getElementById('profileModal');
+        modal.style.display='flex'; document.body.style.overflow='hidden';
+        document.getElementById('profileControls').style.display='none';
+        const postsEl = document.getElementById('profilePosts');
+        document.getElementById('profileTitle').textContent = 'منشورات: ' + name;
+        postsEl.innerHTML = '';
+        if (snap.empty){ postsEl.innerHTML=`<div class="error">لا توجد منشورات.</div>`; return; }
+        snap.docs.forEach(d=>{
+          const p = d.data();
+          const row = document.createElement('div');
+          row.className='post';
+          row.innerHTML = `
+            <div class="post-header">
+              <span class="badge">⟐ ${p.type||'منوّع'}</span>
+              <small style="color:var(--muted);margin-inline-start:auto">${(p.authorName||'مستخدم')}</small>
+            </div>
+            <p>${(p.content||'')}</p>
+            ${renderMedia(p)}
+          `;
+          postsEl.appendChild(row);
+        });
+      };
+
+      // حذف منشور (يخصني)
+      window.deleteMyPost = async function(postId){
+        const authorId = localStorage.getItem('authorId');
+        if(!authorId) return;
+        try{
+          const ref = doc(db,'posts', postId);
+          const pd = await getDoc(ref);
+          if(!pd.exists()) return;
+          const p = pd.data();
+          if(p.authorId !== authorId){ showToast('لا يمكنك حذف منشور لا تملكه'); return; }
+
+          // حذف التعليقات إن وجدت (أفضلية)
+          const cSnap = await getDocs(collection(db,'posts', postId, 'comments'));
+          const dels = [];
+          cSnap.forEach(c=>{ dels.push(deleteDoc(doc(db,'posts', postId, 'comments', c.id))); });
+          await Promise.all(dels);
+
+          await deleteDoc(ref);
+          showToast('تم حذف المنشور');
+          // إعادة تحميل الملف
+          loadProfile(authorId, true);
+        }catch(e){ console.error(e); showToast('تعذّر الحذف'); }
+      };
+
       // تشغيل
       recordReferralIfAny();
-      await loadInvites(); // لتحديث شارة المميز إن توفرت
-
-      // تحديث دوري خفيف
+      await loadInvites();
       setInterval(()=>{ loadInvites(); }, 60*1000);
 
     } else {
