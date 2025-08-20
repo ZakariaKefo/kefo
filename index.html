@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <!-- منع الزوم + تثبيت عرض الموبايل -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#00ff88" id="theme-color" />
   <title>منصة الخدمات - KeFo Posts</title>
@@ -12,8 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 
   <style>
-    /* ======== Themes ======== */
-    :root{ /* Matrix (default) */
+    :root{
       --bg:#050805; --fg:#def7e5; --muted:#7dd08e;
       --primary:#00ff88; --primary-2:#11ffaa; --secondary:#00c06a;
       --card:#071107; --card-2:#0a150a;
@@ -26,30 +24,27 @@
       --bg:#f5fff6; --fg:#08210f; --muted:#3a7b55;
       --primary:#2563eb; --primary-2:#5ea5ff; --secondary:#0d47a1;
       --card:#ffffff; --card-2:#f2fff7; --chip:#eef3ff;
-      --love:#e91e63; --danger:#c62828;
-      --shadow:0 18px 40px rgba(2,12,27,.08);
+      --love:#e91e63; --danger:#c62828; --shadow:0 18px 40px rgba(2,12,27,.08);
     }
     .pink{
       --bg:#ffecf3; --fg:#3c0a1f; --muted:#8a3a5d;
       --primary:#d81b60; --primary-2:#ff8ad1; --secondary:#880e4f;
       --card:#fff0f6; --card-2:#ffe3ef; --chip:#ffe6f0;
-      --love:#ff2f7a; --danger:#c2185b;
-      --shadow:0 18px 40px rgba(0,0,0,.1);
+      --love:#ff2f7a; --danger:#c2185b; --shadow:0 18px 40px rgba(0,0,0,.1);
     }
 
-    *,*::before,*::after{box-sizing:border-box; min-width:0}
-    html,body{height:100%; width:100%; overflow-x:hidden}
+    *,*::before,*::after{box-sizing:border-box;min-width:0}
+    html,body{height:100%;width:100%;overflow-x:hidden}
     body{
       margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);
       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
       font-size:clamp(14px,1.8vw,16px);
-      -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;
+      -webkit-text-size-adjust:100%;
       touch-action: pan-x pan-y;
     }
     input,select,textarea,button{font-size:16px}
-    img, iframe, video{display:block;max-width:100%;width:100%;height:auto}
+    img,iframe,video{display:block;max-width:100%;width:100%;height:auto}
 
-    /* Matrix rain */
     #mxRain{position:fixed;inset:0;z-index:-2;opacity:.16;pointer-events:none;filter:drop-shadow(0 0 6px var(--primary));display:block}
     body.light #mxRain, body.pink #mxRain{display:none}
     .mx-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.08;background:
@@ -67,11 +62,6 @@
     .install-btn{display:none;align-items:center;gap:6px;background:linear-gradient(90deg,var(--primary),var(--primary-2));
       color:#071407;border:none;border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:800}
 
-    .filters{position:sticky;top:58px;z-index:55;padding:8px 0;margin:0 auto;max-width:1280px;width:100%}
-    .chips{display:flex;gap:8px;overflow:auto;padding:8px 10px}
-    .chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(0,255,136,.18);background:var(--chip);color:var(--fg);cursor:pointer;white-space:nowrap}
-    .chip.active{background:rgba(0,255,136,.18);box-shadow:0 0 16px rgba(0,255,136,.25)}
-
     .content{padding:120px 10px 140px;margin:0 auto;width:100%;max-width:1280px}
     #postsContainer{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;width:100%}
     @media (min-width:900px){.content{padding:130px 20px 40px}#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
@@ -85,7 +75,7 @@
     .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
     .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere;word-break:break-word}
 
-    /* معاينة يوتيوب */
+    /* يوتيوب */
     .embed{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:10px;
       box-shadow:0 0 0 1px rgba(0,255,136,.25) inset;cursor:pointer}
     .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}
@@ -93,15 +83,23 @@
     .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;touch-action:manipulation;
       background:radial-gradient(circle at 30% 30%, #eafff4 0%, #cbffe8 60%, #b0ffd9 100%);box-shadow:0 10px 30px rgba(0,255,136,.35),0 0 30px rgba(0,255,136,.45)}
 
+    /* أزرار التفاعل (محاذاة أفقيّة) */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
-    .react-btn{border:none;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:8px 10px;border-radius:12px;transition:.2s;font-weight:800;touch-action:manipulation}
-    .react-btn[disabled]{opacity:.6;cursor:not-allowed}
-    .react-love i{color:var(--love)} .react-dislike i{color:var(--danger)} .count{font-weight:800}
+    .react-btn, .comments-toggle{
+      display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+      border:none; background:transparent; cursor:pointer; font-size:16px;
+      padding:8px 10px; border-radius:12px; transition:.2s; font-weight:800; flex:0 0 auto; line-height:1;
+    }
+    .react-btn i{display:inline-block}
+    .react-love i{color:var(--love)} .react-dislike i{color:var(--danger)}
+    .count{display:inline-block;font-weight:800}
+    .comments-toggle .badge-num{
+      display:inline-block;min-width:18px;padding:0 6px;height:18px;line-height:18px;font-size:12px;border-radius:10px;background:var(--primary);color:#071407;text-align:center;font-weight:800
+    }
+
     .comments-panel{background:rgba(0,0,0,.06);padding:10px;border-radius:14px;margin-top:12px;display:none;border:1px solid rgba(0,0,0,.08)}
     .comment{padding:6px 0;border-bottom:1px dashed rgba(0,0,0,.15)} .comment:last-child{border-bottom:none}
     .comment small{color:var(--muted);margin-inline-start:6px}
-    .comments-toggle{border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:16px;padding:6px 8px;border-radius:8px}
-    .badge-num{display:inline-block;min-width:18px;padding:0 6px;height:18px;line-height:18px;font-size:12px;border-radius:10px;background:var(--primary);color:#071407;text-align:center;font-weight:800}
 
     .ad-slider-wrapper{margin:4px 0;background:linear-gradient(180deg,var(--card),var(--card-2));padding:10px;border-radius:18px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.12);width:100%;min-width:0}
     .ad-slider{display:flex;gap:15px;overflow-x:auto;padding-bottom:5px;scroll-behavior:smooth}
@@ -133,15 +131,6 @@
     .lb-media iframe{width:100%;height:100%;display:block;border:0;border-radius:12px}
     .lightbox img{width:auto;max-width:96vw;max-height:90vh;height:auto;display:block;border:0;border-radius:12px}
     .lightbox-close{position:absolute;top:-44px;inset-inline-end:0;background:#000;border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer}
-
-    .lightbox:fullscreen,
-    .lightbox:-webkit-full-screen{background:#000}
-    .lightbox:fullscreen .lightbox-content,
-    .lightbox:-webkit-full-screen .lightbox-content{width:100vw;height:100vh;max-width:100vw;max-height:100vh}
-    .lightbox:fullscreen .lb-media,
-    .lightbox:-webkit-full-screen .lb-media{width:100vw;height:100vh;max-width:100vw;max-height:100vh;aspect-ratio:auto}
-    .lightbox:fullscreen iframe,
-    .lightbox:-webkit-full-screen iframe{width:100%;height:100%}
   </style>
 </head>
 <body>
@@ -158,7 +147,7 @@
     </div>
   </div>
 
-  <div class="filters"><div id="chips" class="chips"></div></div>
+  <!-- لم نعد نظهر أزرار الأنواع بالأعلى -->
 
   <div class="content"><div id="postsContainer"></div></div>
 
@@ -170,7 +159,7 @@
     <div class="nav-btn" onclick="openSettings()"><i>⚙️</i>إعدادات</div>
   </div>
 
-  <!-- New post -->
+  <!-- نافذة نشر منشور -->
   <div id="newPostModal" class="modal-backdrop">
     <div class="modal">
       <button class="close-btn" onclick="closeNewPost()">✖</button>
@@ -190,17 +179,22 @@
       <label class="label">المحتوى *</label>
       <textarea id="postContent" class="input" rows="3" placeholder="اكتب المنشور..."></textarea>
 
-      <!-- Media: واحد فقط (صورة أو يوتيوب) -->
-      <label class="label">رابط صورة (اختياري، يُلغِي رابط يوتيوب)</label>
-      <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/image.jpg">
+      <!-- نجمع كل حقل داخل مجموعة لسهولة الإخفاء -->
+      <div id="imageGroup">
+        <label class="label">رابط صورة (اختياري، يُلغِي رابط يوتيوب)</label>
+        <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/image.jpg">
+      </div>
 
-      <label class="label">رابط YouTube (اختياري، يُلغِي رابط الصورة)</label>
-      <input id="youtubeURL" type="url" class="input media-input" placeholder="https://www.youtube.com/watch?v=... أو youtu.be/...">
+      <div id="youtubeGroup">
+        <label class="label">رابط YouTube (اختياري، يُلغِي رابط الصورة)</label>
+        <input id="youtubeURL" type="url" class="input media-input" placeholder="https://www.youtube.com/watch?v=... أو youtu.be/...">
+      </div>
 
       <button class="btn" onclick="submitPost()">نشر</button>
     </div>
   </div>
 
+  <!-- إعدادات -->
   <div id="settingsModal" class="modal-backdrop">
     <div class="modal">
       <button class="close-btn" onclick="closeSettings()">✖</button>
@@ -212,6 +206,7 @@
     </div>
   </div>
 
+  <!-- تنبيهات داخلية -->
   <div id="infoModal" class="modal-backdrop">
     <div class="modal">
       <button class="close-btn" onclick="closeInfo()">✖</button>
@@ -223,8 +218,8 @@
     </div>
   </div>
 
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="مشغل الوسائط">
+  <!-- Lightbox عام للصور/يوتيوب -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="عرض الوسائط">
     <div class="lightbox-content">
       <button class="lightbox-close" onclick="closeLightbox()">إغلاق ✖</button>
       <div id="lightboxInner"></div>
@@ -233,10 +228,9 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- UI / PWA / Lightbox -->
+  <!-- وظائف الواجهة -->
   <script>
-    /* Modals */
-    function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";}
+    function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";syncMediaInputs();}
     function closeNewPost(){document.getElementById("newPostModal").style.display="none";document.body.style.overflow="";}
     function openSettings(){document.getElementById("settingsModal").style.display="flex";document.body.style.overflow="hidden";}
     function closeSettings(){document.getElementById("settingsModal").style.display="none";document.body.style.overflow="";}
@@ -244,7 +238,7 @@
     function closeInfo(){document.getElementById('infoModal').style.display='none';document.body.style.overflow="";}
     window.showToast=(msg)=>{const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>t.classList.remove('show'),2200);};
 
-    /* Themes */
+    /* سِمات */
     const themeKey="kefo_theme";
     const names={matrix:"ماتريكس", light:"نهاري", pink:"بناتي"};
     function applyTheme(t){
@@ -264,7 +258,7 @@
     }
     applyTheme(localStorage.getItem(themeKey)||"matrix");
 
-    /* منع التمدد الأفقي + تعطيل الإيماءات */
+    /* منع التمدد + إيماءات الزوم */
     window.addEventListener('load',()=>{
       document.querySelectorAll('img,iframe,video').forEach(el=>{el.style.maxWidth='100%';el.style.width='100%';});
     });
@@ -272,12 +266,12 @@
       window.addEventListener(evt, e=>e.preventDefault(), {passive:false});
     });
 
-    /* حماية المحتوى من النسخ */
+    /* حماية المحتوى */
     document.addEventListener('contextmenu', e=>e.preventDefault());
     document.addEventListener('selectstart', e=>e.preventDefault());
     document.addEventListener('copy', e=>e.preventDefault());
     document.addEventListener('cut', e=>e.preventDefault());
-    document.addEventListener('touchstart', function(e){ window.longTouch=setTimeout(()=>e.preventDefault(),500); }, {passive:false});
+    document.addEventListener('touchstart', e=>{ window.longTouch=setTimeout(()=>e.preventDefault(),500); }, {passive:false});
     document.addEventListener('touchend', ()=>clearTimeout(window.longTouch));
 
     /* PWA */
@@ -289,7 +283,7 @@
     installBtn?.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); const c = await deferredPrompt.userChoice.catch(()=>null); deferredPrompt=null; installBtn.style.display='none'; showToast(c && c.outcome==='accepted' ? 'جاري تثبيت التطبيق…' : 'تم إلغاء التثبيت.'); });
     window.addEventListener('appinstalled',()=>{showToast('تم تثبيت التطبيق ✅');installBtn.style.display='none';});
 
-    /* Matrix rain */
+    /* Matrix Rain */
     const canvas=document.getElementById('mxRain'), ctx=canvas.getContext('2d');
     let w,h,font=16,cols,drops,raf;
     function rainResize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; cols=Math.floor(w/font); drops=new Array(cols).fill( Math.floor(Math.random()*h/font) ); }
@@ -303,57 +297,36 @@
     window.addEventListener('resize',()=>{cancelAnimationFrame(raf);rainResize();rainDraw();});
     rainResize(); rainDraw();
 
-    /* ===== Lightbox (صور/يوتيوب) ===== */
+    /* Lightbox */
     const lb=document.getElementById('lightbox');
     const lbInner=document.getElementById('lightboxInner');
-
-    function openLightbox(contentHtml){
-      lbInner.innerHTML=contentHtml;
-      lb.style.display='flex'; document.body.style.overflow='hidden';
-    }
-    function closeLightbox(){
-      lb.style.display='none'; document.body.style.overflow='';
-      lbInner.innerHTML='';
-      if (document.fullscreenElement || document.webkitFullscreenElement) {
-        (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
-      }
-    }
+    function openLightbox(html){ lbInner.innerHTML=html; lb.style.display='flex'; document.body.style.overflow='hidden'; }
+    function closeLightbox(){ lb.style.display='none'; document.body.style.overflow=''; lbInner.innerHTML=''; }
     window.closeLightbox=closeLightbox;
-
-    async function tryAutoFullscreen(){
-      const req = lb.requestFullscreen || lb.webkitRequestFullscreen || lb.msRequestFullscreen;
-      try{ if (req) await req.call(lb); }catch(err){ /* تجاهل */ }
-    }
 
     function ytIdFrom(url){try{const u=new URL(url);let v=u.searchParams.get('v');if(!v){const p=u.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
 
     window.openYouTube = function(id){
       const src=`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
       openLightbox(`<div class="lb-media"><iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`);
-      setTimeout(tryAutoFullscreen, 0);
     };
+    window.openImage = function(src,alt){ openLightbox(`<img src="${src}" alt="${(alt||'').replace(/"/g,'&quot;')}">`); };
 
-    window.openImage = function(src,alt){
-      openLightbox(`<img src="${src}" alt="${(alt||'').replace(/"/g,'&quot;')}">`);
-    };
-
-    // إغلاق بالضغط خارج المحتوى أو Esc
-    lb.addEventListener('click',e=>{ if(e.target===lb) closeLightbox(); });
-    window.addEventListener('keydown',e=>{ if(e.key==='Escape' && lb.style.display==='flex') closeLightbox(); });
-
-    /* تفعيل شرط "وسيط واحد فقط" في نموذج النشر */
+    /* إخفاء/إظهار مجموعات الوسائط */
     function syncMediaInputs(){
-      const img = document.getElementById('imageURL');
-      const yt  = document.getElementById('youtubeURL');
-      if(img.value.trim()){
-        yt.parentElement.style.display='none';
+      const imgVal = document.getElementById('imageURL').value.trim();
+      const ytVal  = document.getElementById('youtubeURL').value.trim();
+      const imgGroup = document.getElementById('imageGroup');
+      const ytGroup  = document.getElementById('youtubeGroup');
+      if (imgVal){
+        ytGroup.style.display='none';
+        imgGroup.style.display='';
+      }else if(ytVal){
+        imgGroup.style.display='none';
+        ytGroup.style.display='';
       }else{
-        yt.parentElement.style.display='';
-      }
-      if(yt.value.trim()){
-        img.parentElement.style.display='none';
-      }else{
-        img.parentElement.style.display='';
+        imgGroup.style.display='';
+        ytGroup.style.display='';
       }
     }
     window.addEventListener('input', (e)=>{
@@ -382,18 +355,32 @@
     catch(e){ console.error('Firebase init error', e); window.showToast?.('تعذّر الاتصال بالخادم، ستظهر المنشورات عند الاتصال.'); }
 
     const postsContainer=document.getElementById("postsContainer");
-    const chipsEl=document.getElementById("chips");
-    const filterTypes=[{key:'الكل',label:'الكل'},{key:'ساعدني',label:'ساعدني'},{key:'شكوى وفساد',label:'شكوى وفساد'},{key:'تعليم',label:'تعليم'},{key:'صحة',label:'صحة'},{key:'منشورات متنوعة',label:'منوّع'}];
-    let activeFilter='الكل', searchText='';
 
-    function buildChips(){ chipsEl.innerHTML=''; filterTypes.forEach(t=>{const b=document.createElement('button'); b.className='chip'+(t.key===activeFilter?' active':''); b.textContent=t.label; b.onclick=()=>{activeFilter=t.key; buildChips(); updateVisibility();}; chipsEl.appendChild(b);}); }
-    buildChips();
+    // البحث بالنص فقط (لا توجد الآن فلاتر أنواع أعلى الصفحة)
+    let searchText='';
+    let searchTimeout;
+    document.getElementById("searchBar").addEventListener("input", function(){
+      clearTimeout(searchTimeout);
+      searchText=this.value.toLowerCase();
+      searchTimeout=setTimeout(()=>{
+        document.querySelectorAll(".post").forEach(p=>{
+          p.style.display = p.innerText.toLowerCase().includes(searchText) ? "" : "none";
+        });
+      },250);
+    });
 
-    function showSkeletons(n=6){ postsContainer.innerHTML=''; for(let i=0;i<n;i++){const sk=document.createElement('div'); sk.className='post'; sk.style.height='200px'; sk.style.opacity='.3'; sk.style.background='linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.08), rgba(255,255,255,.04))'; postsContainer.appendChild(sk);} }
-    showSkeletons();
+    const adsPool=[{name:"إعلان 1",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/1"},
+                   {name:"إعلان 2",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/2"},
+                   {name:"إعلان 3",image:"https://via.placeholder.com/120",link:"https://example.com/3"},
+                   {name:"إعلان 4",image:"https://via.placeholder.com/120",link:"https://example.com/4"},
+                   {name:"إعلان 5",image:"https://via.placeholder.com/120",link:"https://example.com/5"},
+                   {name:"إعلان 6",image:"https://via.placeholder.com/120",link:"https://example.com/6"}];
+    function getRandomAds(){const copy=[...adsPool];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy.slice(0,4);}
 
     function ytIdFrom(u){try{const url=new URL(u);let v=url.searchParams.get('v');if(!v){const p=url.pathname.split('/');v=p.pop()||p.pop();}return v||null;}catch{return null;}}
     function toYouTubeThumb(u){ const id=ytIdFrom(u); return id?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:null; }
+
+    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
 
     function renderMedia(post){
       try{
@@ -401,7 +388,6 @@
           const safe=post.imageURL.replace(/"/g,'&quot;');
           return `<img src="${safe}" alt="صورة" loading="lazy" onclick="openImage('${safe}','صورة')">`;
         }
-
         if(post.youtubeURL){
           const id = ytIdFrom(post.youtubeURL);
           const thumb=toYouTubeThumb(post.youtubeURL);
@@ -412,18 +398,9 @@
             </div>
           </div>`;
         }
-
         return '';
       }catch(e){ console.error('renderMedia error', e); return ''; }
     }
-
-    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}})},{threshold:.1});
-    function updateVisibility(){ const posts=document.querySelectorAll(".post"); posts.forEach(p=>{const matchesType=(activeFilter==='الكل')||(p.dataset.type===activeFilter); const matchesText=!searchText||p.innerText.toLowerCase().includes(searchText); p.style.display=(matchesType&&matchesText)?'':'none';}); }
-    let searchTimeout;
-    document.getElementById("searchBar").addEventListener("input", function(){ clearTimeout(searchTimeout); searchText=this.value.toLowerCase(); searchTimeout=setTimeout(updateVisibility,250); });
-
-    const adsPool=[{name:"إعلان 1",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/1"},{name:"إعلان 2",image:"https://www.shishastore24.de/wp-content/uploads/2023/11/Kefo-3-jpg.jpg",link:"https://example.com/2"},{name:"إعلان 3",image:"https://via.placeholder.com/120",link:"https://example.com/3"},{name:"إعلان 4",image:"https://via.placeholder.com/120",link:"https://example.com/4"},{name:"إعلان 5",image:"https://via.placeholder.com/120",link:"https://example.com/5"},{name:"إعلان 6",image:"https://via.placeholder.com/120",link:"https://example.com/6"}];
-    function getRandomAds(){const copy=[...adsPool];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy.slice(0,4);}
 
     if (db){
       const postsQ=query(collection(db,"posts"),orderBy("timestamp","desc"));
@@ -433,9 +410,8 @@
 
         posts.forEach((post,i)=>{
           const loves=post.loves||0, dislikes=post.dislikes||0;
-          const card=document.createElement('div'); card.className='post'; card.dataset.type=post.type||''; card.dataset.postId=post.id;
+          const card=document.createElement('div'); card.className='post'; card.dataset.postId=post.id;
 
-          // رابط المشاركة: صورة أو يوتيوب أو صفحة الموقع
           const shareLink = post.imageURL || post.youtubeURL || location.href;
           const safeText  = (post.content||'').replace(/"/g,'&quot;');
 
@@ -446,8 +422,8 @@
             <div class="reactions">
               <button class="react-btn react-love" id="love-${post.id}" onclick="vote('${post.id}','loves', this)"><i>❤️</i><span class="count">${loves}</span></button>
               <button class="react-btn react-dislike" id="dislike-${post.id}" onclick="vote('${post.id}','dislikes', this)"><i>👎</i><span class="count">${dislikes}</span></button>
-              <button class="comments-toggle" id="toggle-${post.id}" onclick="toggleComments('${post.id}')">💬 التعليقات <span class="badge-num">0</span></button>
-              <button class="react-btn" onclick="sharePost('${safeText}','${shareLink}')">🔗 مشاركة</button>
+              <button class="comments-toggle" id="toggle-${post.id}" onclick="toggleComments('${post.id}')">💬 <span>التعليقات</span> <span class="badge-num">0</span></button>
+              <button class="react-btn" onclick="sharePost('${safeText}','${shareLink}')">🔗 <span>مشاركة</span></button>
             </div>
             <div class="comments-panel" id="comments-wrap-${post.id}">
               <div style="margin-top:6px;"><strong>التعليقات</strong></div>
@@ -458,7 +434,6 @@
               </div>
             </div>`;
           postsContainer.appendChild(card);
-
           observer.observe(card);
 
           if((i+1)%5===0){
@@ -473,8 +448,8 @@
           }
         });
 
+        // تحديث عدد التعليقات
         document.querySelectorAll('.post').forEach(p=>{ const id=p.dataset.postId; if(id) initCommentsCount(id); });
-        updateVisibility();
       }, err=>{
         console.error("load posts error",err);
         postsContainer.innerHTML=`<div class="error">فشل جلب المنشورات. حاول لاحقًا.</div>`;
@@ -512,28 +487,36 @@
         catch(e){ console.error("add comment error",e); window.showToast?.("تعذّر إضافة التعليق، حاول لاحقًا."); }
       };
 
+      // تصويت: خيار واحد فقط
       window.vote=async function(postId,field,btn){
         const v=JSON.parse(localStorage.getItem("votes")||"{}");
         if(v[postId]){window.showToast?.("لقد صوّتَّ مسبقًا لهذا المنشور.");return;}
-        try{ const span=btn.querySelector('.count'); span.textContent=(parseInt(span.textContent)||0)+1; btn.classList.add('active');
-             document.getElementById(`love-${postId}`).disabled=true; document.getElementById(`dislike-${postId}`).disabled=true;
-             await updateDoc(doc(db,"posts",postId),{[field]:increment(1)}); v[postId]=field; localStorage.setItem("votes",JSON.stringify(v)); }
-        catch(e){ console.error("vote error",e); window.showToast?.("تعذّر تسجيل التصويت، حاول لاحقًا."); }
+        try{
+          const span=btn.querySelector('.count'); span.textContent=(parseInt(span.textContent)||0)+1; btn.classList.add('active');
+          document.getElementById(`love-${postId}`).disabled=true; document.getElementById(`dislike-${postId}`).disabled=true;
+          await updateDoc(doc(db,"posts",postId),{[field]:increment(1)});
+          v[postId]=field; localStorage.setItem("votes",JSON.stringify(v));
+        }catch(e){ console.error("vote error",e); window.showToast?.("تعذّر تسجيل التصويت، حاول لاحقًا."); }
       };
 
-      // مشاركة: نص + رابط (صورة/يوتيوب) + دعوة ثابتة للموقع
-      window.sharePost = function(text, url){
+      // مشاركة بالترتيب: نص المنشور -> رابط الوسيط (إن وجد) -> الدعوة
+      window.sharePost = function(text, mediaUrl){
         const site = "https://zakariakefo.github.io/kefo/";
-        const link = (url && url !== 'undefined') ? url : site;
-        const message = `${text || ''}\n${link}\n\n✨ زر موقعنا لمزيد من المحتوى: ${site}`;
+        const parts = [];
+        if(text){ parts.push(text); }
+        if(mediaUrl){ parts.push(mediaUrl); }
+        parts.push(`✨ زر موقعنا لمزيد من المحتوى: ${site}`);
+        const message = parts.join('\n');
+
         if(navigator.share){
-          navigator.share({ title:"منصة KeFo", text: message, url: link }).catch(()=>{});
+          // لا نرسل url منفصلة لضمان ترتيب النص كما هو
+          navigator.share({ title:"منصة KeFo", text: message }).catch(()=>{});
         }else{
-          navigator.clipboard.writeText(message).then(()=>showToast("تم نسخ نص المشاركة ✨")).catch(()=>{ alert(message); });
+          navigator.clipboard.writeText(message).then(()=>showToast("تم نسخ رسالة المشاركة ✨")).catch(()=>{ alert(message); });
         }
       };
 
-      // نشر منشور: صورة أو يوتيوب فقط
+      // نشر: صورة أو يوتيوب فقط + إخفاء الخانات البديلة
       window.submitPost = async function(){
         const type = document.getElementById("postType").value;
         const content = document.getElementById("postContent").value.trim();
@@ -547,7 +530,6 @@
           errorDiv.style.display="block";
           return;
         }
-        // أولوية: صورة ثم يوتيوب (وسيط واحد فقط)
         let media = { imageURL:null, youtubeURL:null };
         if(imageURL) media.imageURL = imageURL;
         else if(youtubeURL) media.youtubeURL = youtubeURL;
@@ -562,7 +544,7 @@
           });
           closeNewPost();
           window.showToast?.("تم نشر المنشور ✅");
-          // تفريغ الحقول
+          // تنظيف وإرجاع الخانات
           document.getElementById("postType").value="";
           document.getElementById("postContent").value="";
           document.getElementById("imageURL").value="";
