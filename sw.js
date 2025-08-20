@@ -4,7 +4,7 @@
  * - غيّر CACHE_VERSION عند أي تعديل كبير لضمان تحديث الكاش.
  */
 
-const CACHE_VERSION = 'kefo-v31';
+const CACHE_VERSION = 'kefo-v32';
 const APP_CACHE     = CACHE_VERSION;           // كاش الواجهة
 const RUNTIME_CACHE = 'runtime-v1';
 const FONT_CACHE    = 'font-cache-v1';
