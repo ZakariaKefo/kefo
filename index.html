@@ -5,7 +5,7 @@
   <!-- منع الزوم + تثبيت عرض الموبايل -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#00ff88" id="theme-color" />
-  <title>منصة الخدمات - KeFo Posts</title>
+  <title>منصة شاهد عيان - KeFo Posts</title>
 
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -66,9 +66,24 @@
     .badge-gold{display:none;align-items:center;gap:6px;background:linear-gradient(90deg,#ffe57f,#ffd740);
       color:#5b4100;border:none;border-radius:999px;padding:6px 10px;font-weight:900;box-shadow:var(--featuredGlow)}
 
-    /* أشرطة عليا (بدون صندوق الدعوات الآن) */
-    .bars{position:sticky;top:62px;z-index:65;padding:8px 10px 0}
-    .trend, .creators{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:16px;border:1px solid rgba(0,255,136,.12);box-shadow:var(--shadow);padding:10px;margin-bottom:10px}
+    /* المحتوى الرئيسي */
+    .content{padding:10px;margin:0 auto;width:100%;max-width:1280px}
+    #postsContainer{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;width:100%;padding-bottom:120px}
+    @media (min-width:900px){#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
+    @media (min-width:1400px){#postsContainer{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
+
+    /* بطاقات عامة */
+    .post{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;padding:14px;
+      box-shadow:var(--shadow),0 0 0 1px rgba(0,255,136,.15) inset;position:relative;overflow:hidden;
+      transition:all .25s;opacity:0;transform:translateY(10px);width:100%;min-width:0}
+    .post.visible{opacity:1;transform:translateY(0)}
+    .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
+    .badge.featured{background:linear-gradient(90deg,#ffe57f,#ffd740);color:#5b4100;box-shadow:var(--featuredGlow)}
+    .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere;word-break:break-word}
+
+    /* سكشن الترند والمتصدرين كـ full-span */
+    .trend, .creators{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:16px;border:1px solid rgba(0,255,136,.12);box-shadow:var(--shadow);padding:10px}
     .section-title{display:flex;align-items:center;gap:8px;font-weight:900;margin-bottom:8px}
     .section-title i{filter: drop-shadow(0 0 6px rgba(0,255,136,.4))}
     .trend-list{display:flex;gap:10px;overflow-x:auto;padding:4px}
@@ -81,23 +96,9 @@
     .creator .meta small{color:var(--muted)}
     .follow-btn{margin-inline-start:auto;border:1px solid rgba(0,255,136,.3);background:transparent;color:var(--fg);border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:800}
     .follow-btn.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407}
+    .full-span{grid-column:1/-1}
 
-    /* المحتوى الرئيسي */
-    .content{padding:10px;margin:0 auto;width:100%;max-width:1280px}
-    #postsContainer{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;width:100%;padding-bottom:120px}
-    @media (min-width:900px){#postsContainer{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.bottom-nav{display:none}}
-    @media (min-width:1400px){#postsContainer{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
-
-    .post{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:18px;padding:14px;
-      box-shadow:var(--shadow),0 0 0 1px rgba(0,255,136,.15) inset;position:relative;overflow:hidden;
-      transition:all .25s;opacity:0;transform:translateY(10px);width:100%;min-width:0}
-    .post.visible{opacity:1;transform:translateY(0)}
-    .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-    .badge{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;color:#071407;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
-    .badge.featured{background:linear-gradient(90deg,#ffe57f,#ffd740);color:#5b4100;box-shadow:var(--featuredGlow)}
-    .post p{margin:6px 0 10px;color:var(--muted);line-height:1.75;overflow-wrap:anywhere;word-break:break-word}
-
-    /* يوتيوب */
+    /* يوتيوب / صور */
     .embed{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:10px;
       box-shadow:0 0 0 1px rgba(0,255,136,.25) inset;cursor:pointer}
     .embed-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}
@@ -105,7 +106,7 @@
     .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;touch-action:manipulation;
       background:radial-gradient(circle at 30% 30%, #eafff4 0%, #cbffe8 60%, #b0ffd9 100%);box-shadow:0 10px 30px rgba(0,255,136,.35),0 0 30px rgba(0,255,136,.45)}
 
-    /* أزرار التفاعل/التعليقات/المشاركة عمودية */
+    /* أزرار عمودية */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:stretch}
     .action-vert{
       display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
@@ -132,8 +133,6 @@
     .ad-circle{width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 6px;border:2px solid rgba(0,0,0,.12)}
     .ad-circle img{width:100%;height:100%;object-fit:cover}
     .ad-name{font-size:14px;margin-top:4px;color:var(--muted)}
-    .ad-note{background:rgba(0,0,0,.06);padding:10px;text-align:center;color:var(--fg);font-weight:800;margin-top:8px;border-radius:12px;border:1px solid rgba(0,0,0,.08)}
-    .full-span{grid-column:1/-1}
 
     .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:linear-gradient(0deg, rgba(0,0,0,.08), rgba(0,0,0,0));padding:10px 0;border-radius:25px 25px 0 0;border-top:1px solid rgba(0,0,0,.08);box-shadow:0 -4px 16px rgba(0,0,0,.06);z-index:50}
 
@@ -178,19 +177,7 @@
     </div>
   </div>
 
-  <!-- أشرطة عليا: ترند + متصدرين (بدون دعوات هنا) -->
-  <div class="bars">
-    <div class="trend" id="trendBar" style="display:none">
-      <div class="section-title"><i>🔥</i><b>الأكثر تفاعلاً اليوم</b></div>
-      <div class="trend-list" id="trendList"></div>
-    </div>
-
-    <div class="creators" id="creatorsBar" style="display:none">
-      <div class="section-title"><i>🏆</i><b>لوحة المتصدرين (7 أيام)</b></div>
-      <div class="creator-list" id="creatorList"></div>
-    </div>
-  </div>
-
+  <!-- لم نعد نستخدم bars الثابتة؛ سنضيف بطاقاتها داخل الخلاصة -->
   <div class="content"><div id="postsContainer"></div></div>
 
   <div class="bottom-nav">
@@ -225,8 +212,8 @@
       <textarea id="postContent" class="input" rows="3" placeholder="اكتب المنشور..."></textarea>
 
       <div id="imageGroup">
-        <label class="label">رابط صورة (اختياري، يُلغِي رابط يوتيوب)</label>
-        <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/image.jpg">
+        <label class="label">رابط صورة / رابط منشور اجتماعي (يُفضّل لصق رابط المنشور)</label>
+        <input id="imageURL" type="url" class="input media-input" placeholder="https://example.com/post/.. أو https://example.com/image.jpg">
       </div>
 
       <div id="youtubeGroup">
@@ -263,7 +250,7 @@
         عند وصولك إلى <b>3 إحالات</b> أو أكثر، تظهر لك <b>شارة مميّز</b> ويتم <b>إبراز منشوراتك</b> في الخلاصة.
         وكلما زادت إحالاتك، زاد ظهور منشوراتك للمستخدمين.
       </p>
-      <div class="invite box" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:linear-gradient(180deg,var(--card),var(--card-2));border:1px solid rgba(0,255,136,.12);border-radius:12px;padding:10px">
+      <div class="trend" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <span>رابط دعوتك:</span>
         <code id="refLinkModal" style="background:#002b1a;color:#bfffe4;padding:6px 10px;border-radius:8px;border:1px solid rgba(0,255,136,.18)">…</code>
         <button class="btn" onclick="shareInvite()">مشاركة الرابط</button>
@@ -297,7 +284,7 @@
     <div class="on-card">
       <h3>👋 أهلاً بك في KeFo</h3>
       <div class="on-steps">
-        <div class="on-step"><b>1</b> <div>أنشئ منشورًا بصورة أو فيديو يوتيوب، وابدأ التفاعل فورًا.</div></div>
+        <div class="on-step"><b>1</b> <div>أنشئ منشورًا بصورة (أو رابط منشور اجتماعي) أو فيديو يوتيوب.</div></div>
         <div class="on-step"><b>2</b> <div>تابع أفضل الناشرين وتصفّح الأكثر تفاعلاً اليوم.</div></div>
         <div class="on-step"><b>3</b> <div>ادعُ أصدقاءك عبر رابطك الفريد واربح شارة “مميّز”.</div></div>
       </div>
@@ -310,8 +297,11 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- وظائف الواجهة العامة / PWA / حماية -->
+  <!-- إعدادات عامة + حماية + PWA + OG endpoint -->
   <script>
+    // ضع Endpoint خادم Open Graph إن كنت فعّلته (اختياري)
+    const OG_ENDPOINT = ''; // مثل: 'https://kefo-og.your-subdomain.workers.dev/?url='
+
     function openNewPost(){document.getElementById("newPostModal").style.display="flex";document.body.style.overflow="hidden";syncMediaInputs();loadAuthorField();}
     function closeNewPost(){document.getElementById("newPostModal").style.display="none";document.body.style.overflow="";}
     function openSettings(){document.getElementById("settingsModal").style.display="flex";document.body.style.overflow="hidden";}
@@ -417,12 +407,11 @@
       if(el) el.textContent = url;
     }
 
-    /* فتح/إغلاق نافذة الإحالات من داخل الإعدادات */
+    /* فتح/إغلاق نافذة الإحالات */
     function openReferrals(){
       updateRefModalUI();
       document.getElementById('referralsModal').style.display='flex';
       document.body.style.overflow='hidden';
-      // تحديث العدّاد فور الفتح
       if (typeof loadInvites === 'function') { loadInvites(); }
     }
     function closeReferrals(){
@@ -440,14 +429,27 @@
       if(navigator.share){ navigator.share({title:'دعوة للانضمام إلى KeFo', text}).catch(()=>{}); }
       else { navigator.clipboard.writeText(text).then(()=>showToast('تم نسخ رابط الدعوة')).catch(()=>alert(text)); }
     }
+
+    /* OG (اختياري) */
+    function looksLikeDirectImage(u){ return /\.(jpe?g|png|gif|webp|avif)(\?.*)?$/i.test(u||''); }
+    async function resolveOG(url){
+      if(!OG_ENDPOINT) return null;
+      try{
+        const r = await fetch(OG_ENDPOINT + encodeURIComponent(url));
+        if(!r.ok) return null;
+        const j = await r.json();
+        if (j && j.ok && j.image) return j;
+      }catch(e){ console.warn('OG error', e); }
+      return null;
+    }
   </script>
 
-  <!-- Firebase + العرض + الترند + المتصدرين + الدعوات -->
+  <!-- Firebase + الخلاصة + الترند والمتصدرين داخل الخلاصة -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
       getFirestore, collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc,
-      serverTimestamp, getCountFromServer, increment, where, getDocs, limit, Timestamp
+      serverTimestamp, getCountFromServer, increment, where, getDocs, Timestamp
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -465,10 +467,6 @@
     catch(e){ console.error('Firebase init error', e); window.showToast?.('تعذّر الاتصال بالخادم.'); }
 
     const postsContainer=document.getElementById("postsContainer");
-    const trendBar = document.getElementById('trendBar');
-    const trendList = document.getElementById('trendList');
-    const creatorsBar = document.getElementById('creatorsBar');
-    const creatorList = document.getElementById('creatorList');
     const goldBadge   = document.getElementById('goldBadge');
 
     /* إحالات: تسجيل زيارة برابط ref */
@@ -483,11 +481,11 @@
       }catch(e){ console.warn('referral record error', e); }
     }
 
-    /* قائمة المتابعة (محلي) */
+    /* متابعة محلية */
     function getFollowed(){ try{ return JSON.parse(localStorage.getItem('followedAuthors')||'[]'); }catch{ return []; } }
     function setFollowed(list){ localStorage.setItem('followedAuthors', JSON.stringify(list)); }
 
-    /* البحث بالنص */
+    /* بحث نصّي */
     let searchText='';
     let searchTimeout;
     document.getElementById("searchBar").addEventListener("input", function(){
@@ -515,6 +513,18 @@
 
     function renderMedia(post){
       try{
+        if (post.ogImage) {
+          const img = post.ogImage.replace(/"/g,'&quot;');
+          const srcLink = post.linkURL ? post.linkURL.replace(/"/g,'&quot;') : '#';
+          return `
+            <div class="embed" style="cursor:zoom-in" onclick="openImage('${img}','صورة من رابط')">
+              <div class="embed-overlay" style="background-image:url('${img}')"></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:6px">
+              <a href="${srcLink}" target="_blank" rel="noopener" class="btn" style="padding:6px 10px;border-radius:10px;font-size:13px">عرض المنشور الأصلي ↗</a>
+            </div>
+          `;
+        }
         if(post.imageURL){
           const safe=post.imageURL.replace(/"/g,'&quot;');
           return `<img src="${safe}" alt="صورة" loading="lazy" onclick="openImage('${safe}','صورة')">`;
@@ -533,124 +543,149 @@
       }catch(e){ console.error('renderMedia error', e); return ''; }
     }
 
-    if (db){
-      /* الترند اليوم */
-      async function loadTrending(){
-        try{
-          const now = new Date();
-          const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0);
-          const qTrend = query(
-            collection(db,'posts'),
-            where('timestamp','>=', Timestamp.fromDate(start)),
-            orderBy('timestamp','desc')
-          );
-          const snap = await getDocs(qTrend);
-          const posts = snap.docs.map(d=>({id:d.id,...d.data()}));
-          posts.sort((a,b)=>(b.loves||0)-(a.loves||0));
-          const top = posts.slice(0,6);
-          trendList.innerHTML = '';
-          top.forEach(p=>{
-            const media = p.imageURL ? `<div class="thumb"><img src="${p.imageURL}" alt=""></div>` :
-              (p.youtubeURL ? `<div class="thumb" style="background:#000"><img src="${toYouTubeThumb(p.youtubeURL)||''}" alt=""></div>` : '');
-            const loves = p.loves||0;
-            const type  = p.type||'منوّع';
-            const content = (p.content||'').slice(0,100);
-            const card = document.createElement('div');
-            card.className='trend-card';
-            card.innerHTML = `
-              ${media}
-              <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-                <span class="badge">⟐ ${type}</span>
-                <small style="color:var(--muted);margin-inline-start:auto">❤️ ${loves}</small>
-              </div>
-              <div style="color:var(--fg)">${content}</div>
-            `;
-            trendList.appendChild(card);
-          });
-          trendBar.style.display = top.length ? 'block' : 'none';
-        }catch(e){ console.warn('trend error', e); trendBar.style.display='none'; }
-      }
+    /* دعوات: عدّاد + شارة (تُفتح من الإعدادات) */
+    async function loadInvites(){
+      try{
+        const my = ensureRefCode();
+        const qRef = query(collection(db,'referrals'), where('ref','==', my));
+        const snap = await getDocs(qRef);
+        const count = snap.size || 0;
+        const countEl = document.getElementById('refCountModal');
+        if(countEl) countEl.textContent = 'إحالاتك: ' + count;
+        if(count >= 3){ goldBadge.style.display='inline-flex'; }
+        else { goldBadge.style.display='none'; }
+      }catch(e){ console.warn('invite load error', e); }
+    }
+    window.loadInvites = loadInvites;
 
-      /* لوحة المتصدرين 7 أيام */
-      async function loadTopCreators(){
-        try{
-          const now = new Date();
-          const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-          const q7 = query(collection(db,'posts'), where('timestamp','>=', Timestamp.fromDate(start)));
-          const snap = await getDocs(q7);
-          const agg = {};
-          snap.docs.forEach(d=>{
-            const p = d.data();
-            const name = (p.authorName||'').trim();
-            if(!name) return;
-            agg[name] = (agg[name]||0) + (p.loves||0);
-          });
-          const arr = Object.entries(agg).map(([name,score])=>({name,score}));
-          arr.sort((a,b)=>b.score-a.score);
-          const top3 = arr.slice(0,3);
+    /* يبني بطاقة "الأكثر تفاعلاً اليوم" داخل الخلاصة */
+    function buildTrendSection(posts){
+      try{
+        // تصفية اليوم
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0);
+        const today = posts.filter(p=>{
+          const d = p.timestamp && p.timestamp.toDate ? p.timestamp.toDate() : null;
+          return d && d >= start;
+        });
+        today.sort((a,b)=>(b.loves||0)-(a.loves||0));
+        const top = today.slice(0,6);
+        if(!top.length) return null;
 
-          creatorList.innerHTML='';
-          const followed = getFollowed();
-          top3.forEach(({name,score})=>{
-            const item=document.createElement('div');
-            item.className='creator';
-            const initial = name.trim()[0] || 'ن';
-            const isFollow = followed.includes(name);
-            item.innerHTML = `
-              <div class="avatar">${initial}</div>
-              <div class="meta">
-                <b>${name}</b>
-                <small>❤️ ${score} في 7 أيام</small>
-              </div>
-              <button class="follow-btn ${isFollow?'active':''}" data-name="${name}">
-                ${isFollow?'متابَع':'متابعة'}
-              </button>
-            `;
-            creatorList.appendChild(item);
-          });
-          creatorsBar.style.display = top3.length ? 'block' : 'none';
+        const wrap = document.createElement('div');
+        wrap.className = 'trend full-span';
+        const list = document.createElement('div');
+        list.className = 'trend-list';
+        top.forEach(p=>{
+          const media = p.ogImage ? `<div class="thumb"><img src="${p.ogImage}" alt=""></div>` :
+                        p.imageURL ? `<div class="thumb"><img src="${p.imageURL}" alt=""></div>` :
+                        p.youtubeURL ? `<div class="thumb"><img src="${toYouTubeThumb(p.youtubeURL)||''}" alt=""></div>` : '';
+          const loves = p.loves||0;
+          const type  = p.type||'منوّع';
+          const content = (p.content||'').slice(0,100);
+          const card = document.createElement('div');
+          card.className='trend-card';
+          card.innerHTML = `
+            ${media}
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+              <span class="badge">⟐ ${type}</span>
+              <small style="color:var(--muted);margin-inline-start:auto">❤️ ${loves}</small>
+            </div>
+            <div style="color:var(--fg)">${content}</div>
+          `;
+          list.appendChild(card);
+        });
+        wrap.innerHTML = `<div class="section-title"><i>🔥</i><b>الأكثر تفاعلاً اليوم</b></div>`;
+        wrap.appendChild(list);
+        return wrap;
+      }catch(e){ console.warn('buildTrendSection error', e); return null; }
+    }
 
-          creatorList.querySelectorAll('.follow-btn').forEach(btn=>{
+    /* يبني بطاقة "لوحة المتصدرين" داخل الخلاصة */
+    function buildCreatorsSection(posts){
+      try{
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        const last7 = posts.filter(p=>{
+          const d = p.timestamp && p.timestamp.toDate ? p.timestamp.toDate() : null;
+          return d && d >= start;
+        });
+        const agg = {};
+        last7.forEach(p=>{
+          const name = (p.authorName||'').trim();
+          if(!name) return;
+          agg[name] = (agg[name]||0) + (p.loves||0);
+        });
+        const arr = Object.entries(agg).map(([name,score])=>({name,score})).sort((a,b)=>b.score-a.score).slice(0,3);
+        if(!arr.length) return null;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'creators full-span';
+        wrap.innerHTML = `<div class="section-title"><i>🏆</i><b>لوحة المتصدرين (7 أيام)</b></div>`;
+        const list = document.createElement('div');
+        list.className = 'creator-list';
+
+        const followed = getFollowed();
+        arr.forEach(({name,score})=>{
+          const item=document.createElement('div');
+          item.className='creator';
+          const initial = name.trim()[0] || 'ن';
+          const isFollow = followed.includes(name);
+          item.innerHTML = `
+            <div class="avatar">${initial}</div>
+            <div class="meta">
+              <b>${name}</b>
+              <small>❤️ ${score} في 7 أيام</small>
+            </div>
+            <button class="follow-btn ${isFollow?'active':''}" data-name="${name}">
+              ${isFollow?'متابَع':'متابعة'}
+            </button>
+          `;
+          list.appendChild(item);
+        });
+        wrap.appendChild(list);
+
+        // سلوك المتابعة
+        setTimeout(()=>{
+          wrap.querySelectorAll('.follow-btn').forEach(btn=>{
             btn.onclick = ()=>{
               const name = btn.getAttribute('data-name');
               let list = getFollowed();
               if(list.includes(name)){ list = list.filter(n=>n!==name); btn.classList.remove('active'); btn.textContent='متابعة'; }
-              else { list.push(name); btn.classList.add('active'); btn.textContent='متابَع'; showToast('ستُبرز منشورات '+name+' لديك'); }
+              else { list.push(name); btn.classList.add('active'); btn.textContent='متابَع'; window.showToast?.('ستُبرز منشورات '+name+' لديك'); }
               setFollowed(list);
             };
           });
-        }catch(e){ console.warn('creators error', e); creatorsBar.style.display='none'; }
-      }
+        });
+        return wrap;
+      }catch(e){ console.warn('buildCreatorsSection error', e); return null; }
+    }
 
-      /* دعوات: عدّاد + شارة (تُحدّث داخل نافذة الإحالات) */
-      async function loadInvites(){
-        try{
-          const my = ensureRefCode();
-          const qRef = query(collection(db,'referrals'), where('ref','==', my));
-          const snap = await getDocs(qRef);
-          const count = snap.size || 0;
-          const countEl = document.getElementById('refCountModal');
-          if(countEl) countEl.textContent = 'إحالاتك: ' + count;
-          if(count >= 3){ goldBadge.style.display='inline-flex'; }
-          else { goldBadge.style.display='none'; }
-        }catch(e){ console.warn('invite load error', e); }
-      }
-      window.loadInvites = loadInvites; // لاستخدامها عند فتح نافذة الإحالات
-
-      /* عرض المنشورات */
+    if (db){
       const postsQ=query(collection(db,"posts"),orderBy("timestamp","desc"));
       onSnapshot(postsQ, snap=>{
         const posts=snap.docs.map(d=>({id:d.id,...d.data()}));
+
+        // تفريغ الخلاصة
         postsContainer.innerHTML = posts.length ? "" : `<div class="error">لا توجد منشورات حالياً.</div>`;
 
+        // إدراج سكشن الترند والمتصدّرين كأول عنصرين (إن وُجدا)
+        const trendSec = buildTrendSection(posts);
+        if (trendSec) postsContainer.appendChild(trendSec);
+
+        const creatorsSec = buildCreatorsSection(posts);
+        if (creatorsSec) postsContainer.appendChild(creatorsSec);
+
+        // ثم بقية المنشورات
         const followed = getFollowed();
         const highlightAuthor = goldBadge.style.display!=='none' ? (localStorage.getItem('authorName')||'').trim() : null;
 
-        posts.forEach((post,i)=>{
+        let postCount = 0;
+        posts.forEach((post)=>{
           const loves=post.loves||0, dislikes=post.dislikes||0;
           const card=document.createElement('div'); card.className='post'; card.dataset.postId=post.id;
 
-          const shareLink = post.imageURL || post.youtubeURL || location.href;
+          const shareLink = post.ogImage || post.imageURL || post.youtubeURL || location.href;
           const safeText  = (post.content||'').replace(/"/g,'&quot;');
           const author    = (post.authorName||'مستخدم').replace(/</g,'&lt;');
           const featured  = (highlightAuthor && post.authorName===highlightAuthor) ? ' featured' : '';
@@ -691,16 +726,17 @@
           postsContainer.appendChild(card);
           observer.observe(card);
 
-          // شريط إعلانات كل 5 منشورات
-          if((i+1)%5===0){
+          postCount++;
+          // شريط إعلانات بعد كل 5 منشورات (لا يحسب السكاشن)
+          if(postCount%5===0){
             const wrapper=document.createElement('div'); wrapper.className='ad-slider-wrapper full-span';
             const slider=document.createElement('div'); slider.className='ad-slider';
             getRandomAds().forEach(ad=>{ const slide=document.createElement('div'); slide.className='ad-slide';
               slide.innerHTML=`<a href="${ad.link}" target="_blank" rel="noopener"><div class="ad-circle"><img src="${ad.image}" alt="${ad.name}" loading="lazy"></div><div class="ad-name">${ad.name}</div></a>`;
               slider.appendChild(slide);
             });
-            const note=document.createElement('div'); note.className='ad-note'; note.innerHTML=`لإضافة إعلانك الخاص <a href="https://wa.me/123456789" target="_blank" rel="noopener">اضغط هنا</a>`;
-            wrapper.appendChild(slider); wrapper.appendChild(note); postsContainer.appendChild(wrapper);
+            postsContainer.appendChild(wrapper);
+            wrapper.appendChild(slider);
           }
 
           // إبراز منشورات المؤلفين المتابعين
@@ -778,11 +814,11 @@
         }
       };
 
-      // نشر: صورة أو يوتيوب فقط + اسم ناشر
+      // نشر: صورة/OG أو يوتيوب + اسم ناشر
       window.submitPost = async function(){
         const type = document.getElementById("postType").value;
         const content = document.getElementById("postContent").value.trim();
-        const imageURL = document.getElementById("imageURL").value.trim();
+        const imageURLInput = document.getElementById("imageURL").value.trim();
         const youtubeURL = document.getElementById("youtubeURL").value.trim();
         const authorName = document.getElementById("authorName").value.trim();
         const errorDiv = document.getElementById("postError");
@@ -794,18 +830,31 @@
           errorDiv.style.display="block";
           return;
         }
-        let media = { imageURL:null, youtubeURL:null };
-        if(imageURL) media.imageURL = imageURL;
-        else if(youtubeURL) media.youtubeURL = youtubeURL;
+
+        let payload = {
+          type, content, authorName,
+          imageURL: null, youtubeURL: null,
+          linkURL: null, ogImage: null,
+          loves:0, dislikes:0,
+          timestamp: serverTimestamp()
+        };
+
+        if (youtubeURL) {
+          payload.youtubeURL = youtubeURL;
+        } else if (imageURLInput) {
+          if (looksLikeDirectImage(imageURLInput)) {
+            payload.imageURL = imageURLInput;
+          } else {
+            payload.linkURL = imageURLInput;
+            try{
+              const og = typeof resolveOG==='function' ? await resolveOG(imageURLInput) : null;
+              if (og && og.image) payload.ogImage = og.image;
+            }catch{}
+          }
+        }
 
         try{
-          await addDoc(collection(db, "posts"), {
-            type, content, authorName,
-            imageURL: media.imageURL,
-            youtubeURL: media.youtubeURL,
-            loves:0, dislikes:0,
-            timestamp: serverTimestamp()
-          });
+          await addDoc(collection(db, "posts"), payload);
           localStorage.setItem('authorName', authorName);
           closeNewPost();
           window.showToast?.("تم نشر المنشور ✅");
@@ -814,9 +863,6 @@
           document.getElementById("imageURL").value="";
           document.getElementById("youtubeURL").value="";
           setTimeout(()=>syncMediaInputs(),0);
-
-          // إعادة تحميل اللوحات
-          loadTrending(); loadTopCreators();
         }catch(e){
           console.error("submitPost error", e);
           errorDiv.textContent="فشل النشر، حاول لاحقًا.";
@@ -826,12 +872,10 @@
 
       // تشغيل
       recordReferralIfAny();
-      await loadTrending();
-      await loadTopCreators();
-      await loadInvites();
+      await loadInvites(); // لتحديث شارة المميز إن توفرت
 
       // تحديث دوري خفيف
-      setInterval(()=>{ loadInvites(); loadTrending(); loadTopCreators(); }, 60*1000);
+      setInterval(()=>{ loadInvites(); }, 60*1000);
 
     } else {
       postsContainer.innerHTML=`<div class="error">غير متصل بقاعدة البيانات.</div>`;
