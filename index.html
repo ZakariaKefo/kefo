@@ -5,7 +5,7 @@
   <!-- منع الزوم + تثبيت عرض الموبايل -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#00ff88" id="theme-color" />
-  <title>منصة شاهد عيان - KeFo Posts</title>
+  <title>منصة الخدمات - KeFo Posts</title>
 
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -66,9 +66,9 @@
     .badge-gold{display:none;align-items:center;gap:6px;background:linear-gradient(90deg,#ffe57f,#ffd740);
       color:#5b4100;border:none;border-radius:999px;padding:6px 10px;font-weight:900;box-shadow:var(--featuredGlow)}
 
-    /* أشرطة عليا */
+    /* أشرطة عليا (بدون صندوق الدعوات الآن) */
     .bars{position:sticky;top:62px;z-index:65;padding:8px 10px 0}
-    .trend, .creators, .invite{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:16px;border:1px solid rgba(0,255,136,.12);box-shadow:var(--shadow);padding:10px;margin-bottom:10px}
+    .trend, .creators{background:linear-gradient(180deg,var(--card),var(--card-2));border-radius:16px;border:1px solid rgba(0,255,136,.12);box-shadow:var(--shadow);padding:10px;margin-bottom:10px}
     .section-title{display:flex;align-items:center;gap:8px;font-weight:900;margin-bottom:8px}
     .section-title i{filter: drop-shadow(0 0 6px rgba(0,255,136,.4))}
     .trend-list{display:flex;gap:10px;overflow-x:auto;padding:4px}
@@ -81,10 +81,6 @@
     .creator .meta small{color:var(--muted)}
     .follow-btn{margin-inline-start:auto;border:1px solid rgba(0,255,136,.3);background:transparent;color:var(--fg);border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:800}
     .follow-btn.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#071407}
-
-    .invite .box{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-    .invite .box code{background:#002b1a;color:#bfffe4;padding:6px 10px;border-radius:8px;border:1px solid rgba(0,255,136,.18)}
-    .invite .box .btn{padding:8px 12px;border-radius:999px}
 
     /* المحتوى الرئيسي */
     .content{padding:10px;margin:0 auto;width:100%;max-width:1280px}
@@ -109,7 +105,7 @@
     .embed-big{position:relative;z-index:2;width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;font-size:28px;touch-action:manipulation;
       background:radial-gradient(circle at 30% 30%, #eafff4 0%, #cbffe8 60%, #b0ffd9 100%);box-shadow:0 10px 30px rgba(0,255,136,.35),0 0 30px rgba(0,255,136,.45)}
 
-    /* أزرار التفاعل العمودية */
+    /* أزرار التفاعل/التعليقات/المشاركة عمودية */
     .reactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:stretch}
     .action-vert{
       display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
@@ -123,7 +119,6 @@
     }
     .action-vert .label{font-size:12px;color:var(--muted);font-weight:800}
     .love .icon-wrap i{color:var(--love)} .dislike .icon-wrap i{color:var(--danger)}
-    /* زر المشاركة لا يحتاج شارة */
     .share .count-badge{display:none}
 
     .comments-panel{background:rgba(0,0,0,.06);padding:10px;border-radius:14px;margin-top:12px;display:none;border:1px solid rgba(0,0,0,.08)}
@@ -183,7 +178,7 @@
     </div>
   </div>
 
-  <!-- أشرطة عليا: ترند + متصدرين + دعوات -->
+  <!-- أشرطة عليا: ترند + متصدرين (بدون دعوات هنا) -->
   <div class="bars">
     <div class="trend" id="trendBar" style="display:none">
       <div class="section-title"><i>🔥</i><b>الأكثر تفاعلاً اليوم</b></div>
@@ -193,16 +188,6 @@
     <div class="creators" id="creatorsBar" style="display:none">
       <div class="section-title"><i>🏆</i><b>لوحة المتصدرين (7 أيام)</b></div>
       <div class="creator-list" id="creatorList"></div>
-    </div>
-
-    <div class="invite" id="inviteBar">
-      <div class="section-title"><i>🤝</i><b>دعوة الأصدقاء</b></div>
-      <div class="box">
-        <span>شارك رابط دعوتك:</span>
-        <code id="refLink">…</code>
-        <button class="btn" onclick="shareInvite()">مشاركة الرابط</button>
-        <small id="inviteCount" style="color:var(--muted);font-weight:800;margin-inline-start:auto">إحالاتك: 0</small>
-      </div>
     </div>
   </div>
 
@@ -258,9 +243,31 @@
     <div class="modal">
       <button class="close-btn" onclick="closeSettings()">✖</button>
       <h3>إعدادات</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
         <button class="btn" style="flex:1" onclick="cycleTheme()">تغيير الوضع</button>
         <div id="themeLabel" style="font-weight:800;color:var(--muted);">الوضع الحالي: ماتريكس</div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn" style="flex:1" onclick="openReferrals()">إحالاتك</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة الإحالات -->
+  <div id="referralsModal" class="modal-backdrop">
+    <div class="modal">
+      <button class="close-btn" onclick="closeReferrals()">✖</button>
+      <h3>إحالاتك</h3>
+      <p style="color:var(--muted);font-weight:800;line-height:1.8">
+        عند وصولك إلى <b>3 إحالات</b> أو أكثر، تظهر لك <b>شارة مميّز</b> ويتم <b>إبراز منشوراتك</b> في الخلاصة.
+        وكلما زادت إحالاتك، زاد ظهور منشوراتك للمستخدمين.
+      </p>
+      <div class="invite box" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:linear-gradient(180deg,var(--card),var(--card-2));border:1px solid rgba(0,255,136,.12);border-radius:12px;padding:10px">
+        <span>رابط دعوتك:</span>
+        <code id="refLinkModal" style="background:#002b1a;color:#bfffe4;padding:6px 10px;border-radius:8px;border:1px solid rgba(0,255,136,.18)">…</code>
+        <button class="btn" onclick="shareInvite()">مشاركة الرابط</button>
+        <small id="refCountModal" style="color:var(--muted);font-weight:800;margin-inline-start:auto">إحالاتك: 0</small>
       </div>
     </div>
   </div>
@@ -403,6 +410,29 @@
       return code;
     }
     function getSite(){ return (location.origin + location.pathname).replace(/index\.html?$/,''); }
+    function updateRefModalUI(){
+      const code = ensureRefCode();
+      const url  = `${getSite()}?ref=${code}`;
+      const el = document.getElementById('refLinkModal');
+      if(el) el.textContent = url;
+    }
+
+    /* فتح/إغلاق نافذة الإحالات من داخل الإعدادات */
+    function openReferrals(){
+      updateRefModalUI();
+      document.getElementById('referralsModal').style.display='flex';
+      document.body.style.overflow='hidden';
+      // تحديث العدّاد فور الفتح
+      if (typeof loadInvites === 'function') { loadInvites(); }
+    }
+    function closeReferrals(){
+      document.getElementById('referralsModal').style.display='none';
+      document.body.style.overflow='';
+    }
+    window.openReferrals = openReferrals;
+    window.closeReferrals = closeReferrals;
+
+    /* مشاركة رابط الدعوة */
     window.shareInvite = function(){
       const code = ensureRefCode();
       const url  = `${getSite()}?ref=${code}`;
@@ -439,9 +469,7 @@
     const trendList = document.getElementById('trendList');
     const creatorsBar = document.getElementById('creatorsBar');
     const creatorList = document.getElementById('creatorList');
-    const inviteCount = document.getElementById('inviteCount');
     const goldBadge   = document.getElementById('goldBadge');
-    const refLinkCode = document.getElementById('refLink');
 
     /* إحالات: تسجيل زيارة برابط ref */
     async function recordReferralIfAny(){
@@ -455,23 +483,11 @@
       }catch(e){ console.warn('referral record error', e); }
     }
 
-    /* بيانات المستخدم المحلي */
-    function getMyRefCode(){
-      let code = localStorage.getItem('refCode');
-      if(!code){ code = Math.random().toString(36).slice(2,8).toUpperCase(); localStorage.setItem('refCode', code); }
-      return code;
-    }
-    function updateInviteUI(){
-      const code = getMyRefCode();
-      const url  = (location.origin + location.pathname).replace(/index\.html?$/,'') + '?ref=' + code;
-      refLinkCode.textContent = url;
-    }
-
     /* قائمة المتابعة (محلي) */
     function getFollowed(){ try{ return JSON.parse(localStorage.getItem('followedAuthors')||'[]'); }catch{ return []; } }
     function setFollowed(list){ localStorage.setItem('followedAuthors', JSON.stringify(list)); }
 
-    /* عرض المنشورات الأساسية */
+    /* البحث بالنص */
     let searchText='';
     let searchTimeout;
     document.getElementById("searchBar").addEventListener("input", function(){
@@ -526,7 +542,7 @@
           const qTrend = query(
             collection(db,'posts'),
             where('timestamp','>=', Timestamp.fromDate(start)),
-            orderBy('timestamp','desc') // ثانوي
+            orderBy('timestamp','desc')
           );
           const snap = await getDocs(qTrend);
           const posts = snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -606,19 +622,20 @@
         }catch(e){ console.warn('creators error', e); creatorsBar.style.display='none'; }
       }
 
-      /* دعوات: عدّاد + شارة */
+      /* دعوات: عدّاد + شارة (تُحدّث داخل نافذة الإحالات) */
       async function loadInvites(){
         try{
-          const my = getMyRefCode();
+          const my = ensureRefCode();
           const qRef = query(collection(db,'referrals'), where('ref','==', my));
           const snap = await getDocs(qRef);
           const count = snap.size || 0;
-          inviteCount.textContent = 'إحالاتك: ' + count;
-          const badge = document.getElementById('goldBadge');
-          if(count >= 3){ badge.style.display='inline-flex'; }
-          else { badge.style.display='none'; }
+          const countEl = document.getElementById('refCountModal');
+          if(countEl) countEl.textContent = 'إحالاتك: ' + count;
+          if(count >= 3){ goldBadge.style.display='inline-flex'; }
+          else { goldBadge.style.display='none'; }
         }catch(e){ console.warn('invite load error', e); }
       }
+      window.loadInvites = loadInvites; // لاستخدامها عند فتح نافذة الإحالات
 
       /* عرض المنشورات */
       const postsQ=query(collection(db,"posts"),orderBy("timestamp","desc"));
@@ -627,7 +644,7 @@
         postsContainer.innerHTML = posts.length ? "" : `<div class="error">لا توجد منشورات حالياً.</div>`;
 
         const followed = getFollowed();
-        const highlightAuthor = document.getElementById('goldBadge').style.display!=='none' ? (localStorage.getItem('authorName')||'').trim() : null;
+        const highlightAuthor = goldBadge.style.display!=='none' ? (localStorage.getItem('authorName')||'').trim() : null;
 
         posts.forEach((post,i)=>{
           const loves=post.loves||0, dislikes=post.dislikes||0;
@@ -807,12 +824,11 @@
         }
       };
 
-      // تشغيل الأشرطة
+      // تشغيل
       recordReferralIfAny();
-      updateInviteUI();
-      await loadInvites();
       await loadTrending();
       await loadTopCreators();
+      await loadInvites();
 
       // تحديث دوري خفيف
       setInterval(()=>{ loadInvites(); loadTrending(); loadTopCreators(); }, 60*1000);
