@@ -1,5 +1,5 @@
 /* sw.js — KeFo PWA */
-const VERSION = 'kefo-v33';
+const VERSION = 'kefo-v34';
 const APP_SHELL = [
   './',
   'index.html',
